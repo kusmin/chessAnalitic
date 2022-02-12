@@ -30,6 +30,8 @@ public class Arquivo extends BaseDomain {
 	@Column(name="url", nullable=true, length=255)
 	private String url;
 
+	@Column(name="content_type", nullable=true)
+	private String contentType;
 
 	public String getBucket() {
 		return bucket;
@@ -69,6 +71,14 @@ public class Arquivo extends BaseDomain {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	public String getContentType() {
+		return contentType;
+	}
+
+	public void setContentType(String contentType) {
+		this.contentType = contentType;
 	}
 
 	@Override

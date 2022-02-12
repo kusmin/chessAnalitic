@@ -1,17 +1,18 @@
 package br.com.chess;
 
+import br.com.chess.domain.Perfil;
+import br.com.chess.domain.Usuario;
+import br.com.chess.dto.Autorizacao;
+import br.com.chess.dto.Credenciais;
+import br.com.chess.repositories.UsuarioRepository;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.reactive.server.WebTestClient;
 
 import br.com.chess.repositories.PerfilRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
+import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
@@ -24,7 +25,11 @@ public class BaseTest {
     @Autowired
     private PerfilRepository perfilRepository;
 
+	@Autowired
+	private PasswordEncoder encoder;
 
+	@Autowired
+	private UsuarioRepository usuarioRepository;
 
     public WebTestClient getTestClient() {
         return testClient;
@@ -41,142 +46,98 @@ public class BaseTest {
     protected String uuid() {
         return UUID.randomUUID().toString();
     }
-    
-	protected File criarCsvTeste() {
-		
-		File arquivo = new File(System.getProperty("java.io.tmpdir") + "/planilha-" + uuid() + ".csv");
-		
-		String arquivoStr = "";
-		arquivoStr += "Nome;";
-		arquivoStr += "Sobrenome;";
-		arquivoStr += "E-mail;";
-		arquivoStr += "Matricula;";
-		arquivoStr += "Data de nascimento \n";
-		
-		int numLinhas = 1 + (int) (Math.random() * 100);
-		for (int i = 1; i <= numLinhas; i++) {
-			arquivoStr += "Nome " + uuid() + ";";
-			arquivoStr += "Sobrenome " + uuid() + ";";
-			arquivoStr += uuid() + "@teste.com;";
-			arquivoStr += uuid() + ";";
-			arquivoStr += "01/01/2020 \n";
-		}
-		
-		try (BufferedWriter writer = new BufferedWriter(new FileWriter(arquivo))){
-			writer.write(arquivoStr);
-			
-		} catch (IOException ex) {
-			throw new RuntimeException("Erro criando arquivo de teste", ex);
-		}
-		
-		
-		return arquivo;
+
+	public Perfil getPerfil(Personas persona) {
+		return perfilRepository.findByNome(persona.getNome());
 	}
-    
+
 	protected Date addDias(Date data, int dias) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(data);
 		calendar.add(Calendar.DATE, dias);
 		return calendar.getTime();
 	}
-	
 	/**
-	 * Retorna a lista de datas
-	 * 0 - data de lançamento
-	 * 1 - data de inicio
-	 * 2 - data de fim
-	 * 3 - data do feedback
-	 * 
-	 * 4 - data de finalização do conteúdo da campanha
+	 * Cria um usuário administrador com dados randômicos
+	 * @return
 	 */
-	public String[] criarDatasComHora(boolean jaLancou, int diasAposLancamento, int diasCampanha) {
-		String[] result = new String[5];
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		
-		Date agora = new Date();
-		
-		Date dataLancamento = jaLancou ? addDias(agora, -3) : addDias(agora, 3);
-		Date dataInicio = addDias(dataLancamento, diasAposLancamento);
-		Date dataFim = addDias(dataInicio, diasCampanha - 1);
-		Date dataFeedback = addDias(dataFim, -1);
-		Date dataFimDoConteudo = addDias(dataFim, - 1);
-		
-		result[0] = dateFormat.format(dataLancamento) + " 00:00:00";
-		result[1] = dateFormat.format(dataInicio)  + " 00:00:00";
-		result[2] = dateFormat.format(dataFim) + " 23:00:00";
-		result[3] = dateFormat.format(dataFeedback) + " 00:00:00";
-		result[4] = dateFormat.format(dataFimDoConteudo) + " 23:00:00";
-		
-		return result;
+	public Autorizacao criarAdministrador() {
+		return criarAdministrador(email(), cpf(), senha());
 	}
 
-	
 	/**
-	 * Retorna a lista de datas
-	 * 0 - data de lançamento
-	 * 1 - data de inicio
-	 * 2 - data de fim
-	 * 3 - data do feedback
-	 * 
-	 * 4 - data de finalização do conteúdo da campanha
+	 * Cria um usuário administrador
+	 * @param email
+	 * @param cpf
+	 * @param senha
+	 * @return
 	 */
-
-	public String[] criarDatas(boolean jaLancou, int diasAposLancamento, int diasCampanha) {
-		String[] result = new String[5];
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		
-		Date agora = new Date();
-		
-		Date dataLancamento = jaLancou ? addDias(agora, -3) : addDias(agora, 3);
-		Date dataInicio = addDias(dataLancamento, diasAposLancamento);
-		Date dataFim = addDias(dataInicio, diasCampanha - 1);
-		Date dataFeedback = addDias(dataFim, -1);
-		Date dataFimDoConteudo = addDias(dataFim, - 1);
-		
-		result[0] = dateFormat.format(dataLancamento);
-		result[1] = dateFormat.format(dataInicio);
-		result[2] = dateFormat.format(dataFim);
-		result[3] = dateFormat.format(dataFeedback);
-		result[4] = dateFormat.format(dataFimDoConteudo);
-		
-		return result;
+	public Autorizacao criarAdministrador(String email, String cpf, String senha) {
+		return criarUsuarioAuth(email, senha, Personas.Administrador, cpf);
 	}
-	
+	public Autorizacao criarUsuarioAuth(String email, String senha, Personas persona, String cpf) {
+		return this.criarUsuarioAuth(email, senha, persona, cpf, BigDecimal.ZERO);
+	}
 	/**
-	 * Retorna a lista de datas
-	 * 0 - data de lançamento
-	 * 1 - data de inicio
-	 * 2 - data de fim
-	 * 3 - data do feedback
-	 * Se a campanha for do tipo Interesses:
-	 * 4 - data do inicio da seleção de interesses
-	 * 5 - data do fim da seleção de interesses
-	 * 
-	 * 6 - data do fim do conteudo de uma campanha
+	 * Cria um usuário que já se encontra autenticado na plataforma.
+	 *
+	 * É o método preferencial na escrita das especificações.
+	 * @param email
+	 * @param senha
+	 * @param persona
+	 * @param cpf
+	 * @return
 	 */
-	public String[] criarDatasEventoInteresse(boolean jaLancou, int diasAposLancamento, int diasCampanha) {
-		String[] result = new String[7];
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		
-		Date agora = new Date();
-		
-		Date dataLancamento = jaLancou ? addDias(agora, -3) : addDias(agora, 3);
-		Date dataInicio = addDias(dataLancamento, diasAposLancamento);
-		Date dataFim = addDias(dataInicio, diasCampanha - 1);
-		Date dataFeedback = addDias(dataFim, -1);
-		Date dataPreCampanhaInicio = addDias(dataLancamento, + 1);
-		Date dataPreCampanhaFim = addDias(dataInicio, - 1);
-		Date dataFimDoConteudo = addDias(dataFim, - 1);
-		
-		result[0] = dateFormat.format(dataLancamento);
-		result[1] = dateFormat.format(dataInicio);
-		result[2] = dateFormat.format(dataFim);
-		result[3] = dateFormat.format(dataFeedback);
-		result[4] = dateFormat.format(dataPreCampanhaInicio);
-		result[5] = dateFormat.format(dataPreCampanhaFim);
-		result[6] = dateFormat.format(dataFimDoConteudo);
-		
-		
-		return result;
+	public Autorizacao criarUsuarioAuth(String email, String senha, Personas persona, String cpf, BigDecimal saldo) {
+		Usuario usuario = criarUsuario(email, senha, persona, cpf, saldo);
+		return this.autenticar(usuario.getCpf(), senha);
+	}
+	public Autorizacao autenticar(String usuario, String senha) {
+		Credenciais credenciais = new Credenciais(usuario, senha);
+		return this.testClient.post().uri("/api/v1/auth")
+				.bodyValue(credenciais)
+				.exchange()
+				.expectBody(Autorizacao.class).returnResult().getResponseBody();
+	}
+
+	protected Usuario criarUsuario(String email, String senha, Personas persona, String cpf, BigDecimal saldo) {
+		return criarUsuario(email,senha,persona,cpf,Boolean.TRUE, saldo);
+	}
+
+	protected Usuario criarUsuario(String email, String senha, Personas persona, String cpf, Boolean ativo, BigDecimal saldo) {
+		Perfil perfil = this.getPerfil(persona);
+		Usuario usuario = new Usuario();
+		usuario.setNome(email);
+		usuario.setSobrenome(uuid());
+		usuario.setEmail(email);
+		usuario.setAtivo(ativo);
+		usuario.setPerfil(perfil);
+		usuario.setHashSenha(this.encoder.encode(senha));
+		usuario.setCpf(cpf);
+
+
+		usuario = usuarioRepository.save(usuario);
+
+		return usuario;
+	}
+
+	/**
+	 * Cria um e-mail randômico para os testes
+	 * @return
+	 */
+	protected String email() {
+		return uuid() + "@gmail.com";
+	}
+
+	/**
+	 * Cria um CPF randomico
+	 * @return
+	 */
+	protected String cpf() {
+		return new GeraCpfCnpj().cpf(false);
+	}
+
+	protected String senha() {
+		return "12*$" + uuid();
 	}
 }

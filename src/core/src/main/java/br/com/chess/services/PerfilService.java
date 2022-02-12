@@ -64,7 +64,7 @@ public class PerfilService {
 		}
 		
 		if (dto.getActive() != null) {
-			perfil.setAtivo(dto.getActive().booleanValue());
+			perfil.setAtivo(dto.getActive());
 		}
 		
 		if (dto.getRoles() != null) {
@@ -110,7 +110,7 @@ public class PerfilService {
 	}
 	
 	public List<Perfil> find(String name, Boolean active, Long pageSize, Long page) {
-
+		logger.info("Buscando perfil");
 		try {
 			CriteriaBuilder builder = entityManager.getCriteriaBuilder();
 			CriteriaQuery<Perfil> query = builder.createQuery(Perfil.class);

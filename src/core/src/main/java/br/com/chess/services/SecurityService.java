@@ -10,6 +10,7 @@ import java.util.Properties;
 
 import javax.annotation.PostConstruct;
 
+import br.com.chess.UtilConstantes;
 import br.com.chess.domain.AuthLog;
 import br.com.chess.domain.Perfil;
 import br.com.chess.domain.Permissao;
@@ -142,22 +143,22 @@ public class SecurityService {
 			throw new ServiceError("Erro carregando permissões padrão", ex);
 		}
 
-		Perfil perfil = perfilRepository.findByNome("Administrador");
+		Perfil perfil = perfilRepository.findByNome(UtilConstantes.ADMINISTRADOR);
 		if (perfil == null) {
 			perfil = new Perfil();
 			perfil.setNome("Administrador");
-			perfil.setPermissoes(new HashSet<Permissao>());
+			perfil.setPermissoes(new HashSet<>());
 			perfil.setAtivo(true);
 			List<Permissao> permissoes = permissaoRepository.findAll();
 			perfil.getPermissoes().addAll(permissoes);
 			perfilRepository.save(perfil);
 		}
 
-		Usuario admin = usuarioRepository.findByEmail("admin@itexto.com.br");
+		Usuario admin = usuarioRepository.findByEmail("renan.lagee@gmail.com");
 		if (admin == null) {
 			admin = new Usuario();
-			admin.setNome("Administrador");
-			admin.setEmail("admin@itexto.com.br");
+			admin.setNome(UtilConstantes.ADMINISTRADOR);
+			admin.setEmail("renan.lagee@gmail.com");
 			admin.setAtivo(true);
 			admin.setPerfil(perfil);
 			admin.setHashSenha(this.hashSenha("admin1234"));

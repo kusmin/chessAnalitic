@@ -26,9 +26,9 @@ public class AuthController {
 
 		Autorizacao auth = this.securityService.autenticar(credenciais);
 		if (auth != null) {
-			return new ResponseEntity(auth, HttpStatus.OK);
+			return new ResponseEntity<>(auth, HttpStatus.OK);
 		} else {
-			return new ResponseEntity(HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 	}
 
@@ -36,7 +36,7 @@ public class AuthController {
 	@Secured("ROLE_ADMIN")
 	@GetMapping("/api/v1/test")
 	public ResponseEntity<String> testeAcesso() {
-		return new ResponseEntity("Ok", HttpStatus.OK);
+		return new ResponseEntity<>("Ok", HttpStatus.OK);
 	}
 
 }

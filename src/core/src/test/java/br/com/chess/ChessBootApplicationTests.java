@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class ChessBootApplicationTests {
 
 	@Test
-	void contextLoads() {
+	 void contextLoads() {
 	}
 
 }

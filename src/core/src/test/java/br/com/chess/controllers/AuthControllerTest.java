@@ -76,7 +76,4 @@ class AuthControllerTest extends BaseTest {
 		assertEquals(401, result.getStatusCodeValue(), "Deveria me retornar o código 401");
 		assertNull(result.getBody(), "A resposta deveria vir vazia");
 	}
-
-
-
 }

@@ -12,9 +12,12 @@ import org.hibernate.envers.Audited;
 @Entity @Table(name="usuario")
 public class Usuario extends BaseDomain {
 
-		
+
 	@Column(name="nome", nullable=false, unique=false, length=128)
 	private String nome;
+
+	@Column(name="sobrenome", nullable=true, unique=false, length=128)
+	private String sobrenome;
 	
 	@Column(name="matricula", nullable=true, length=128)
 	private String matricula;
@@ -30,6 +33,9 @@ public class Usuario extends BaseDomain {
 	
 	@ManyToOne @JoinColumn(name="perfil_id", nullable=false)
 	private Perfil perfil;
+
+	@Column(name="cpf", nullable=false,unique = true)
+	private String cpf;
 
 	public String getNome() {
 		return nome;
@@ -79,6 +85,13 @@ public class Usuario extends BaseDomain {
 		this.matricula = matricula;
 	}
 
+	public String getCpf() {
+		return cpf;
+	}
+
+	public void setCpf(String cpf) {
+		this.cpf = cpf;
+	}
 
 	public Boolean isAdmin(){
 		for (Permissao perm : perfil.getPermissoes()) {
@@ -88,7 +101,15 @@ public class Usuario extends BaseDomain {
 		}
 		return  false;
 	}
-	
+
+	public String getSobrenome() {
+		return sobrenome;
+	}
+
+	public void setSobrenome(String sobrenome) {
+		this.sobrenome = sobrenome;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		return super.equals(obj);

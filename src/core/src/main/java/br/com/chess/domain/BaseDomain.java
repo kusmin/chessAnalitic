@@ -1,5 +1,6 @@
 package br.com.chess.domain;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.UUID;
 
@@ -14,7 +15,7 @@ import javax.persistence.TemporalType;
 
 
 @MappedSuperclass
-public abstract class BaseDomain implements java.io.Serializable {
+public abstract class BaseDomain implements Serializable {
 	
 	@Id @GeneratedValue(strategy=GenerationType.IDENTITY) @Column(name="id")
 	private long id;
