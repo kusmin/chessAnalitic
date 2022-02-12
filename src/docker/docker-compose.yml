@@ -1,0 +1,18 @@
+version: "3"
+
+services:
+  db:
+    build: ./postgresql
+    container_name: ches_database
+    ports:
+      - 5439:5432
+  cache:
+    build: ./redis
+    container_name: chess_redis
+    ports:
+      - 6379:6379
+  storage:
+    build: ./s3
+    container_name: chess_s3
+    ports:
+      - 9444:9000
