@@ -1,9 +1,13 @@
 package br.com.chess.domain;
 
+import br.com.chess.UtilData;
+import br.com.chess.UtilMetodo;
+import br.com.chess.dto.JogadorDto;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Objects;
 
 @Entity
 @Audited
@@ -27,7 +31,7 @@ public class Jogador extends BaseDomain{
     @Column(name = "url", nullable = true)
     private String url;
 
-    @Column(name = "nome", nullable = false, length = 128)
+    @Column(name = "nome", nullable = true, length = 128)
     private String nome;
 
     @Column(name = "username", nullable = false, length = 64)
@@ -43,15 +47,15 @@ public class Jogador extends BaseDomain{
     private String pais;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "ultima_vez_online", nullable = true)
+    @Column(name = "ultima_vez_online", nullable = false)
     private Date ultimaVezOnline;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "data_registro_plataforma", nullable = true)
+    @Column(name = "data_registro_plataforma", nullable = false)
     private Date dataRegistroPlataforma;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "tipo", nullable = false)
+    @Column(name = "status", nullable = false)
     private StatusContaPlataforma statusConta;
 
     @Column(name = "titulo", nullable = true)
@@ -67,8 +71,32 @@ public class Jogador extends BaseDomain{
     @Column(name = "data_ultima_atualizacao", nullable = false)
     private Date dataUltimaAtualizacao;
 
+    @Column(name = "twitch", nullable = true, length = 128)
+    private String twitchUrl;
+
     public Jogador() {
         // Construtor padrao
+    }
+
+    public Jogador(JogadorDto jogadorDto, TipoPlataforma tipoPlataforma) {
+        super();
+        this.avatarUrl = jogadorDto.getAvatar() != null ? jogadorDto.getAvatar() : null;
+        this.tipo = tipoPlataforma;
+        this.jogadorId = jogadorDto.getJogadorId();
+        this.urlId = jogadorDto.getUrlId() != null ? jogadorDto.getUrlId() : null;
+        this.url = jogadorDto.getUrl() != null ? jogadorDto.getUrl() : null;
+        this.nome = jogadorDto.getName() != null ? jogadorDto.getUrl() : null;
+        this.username = jogadorDto.getUsername();
+        this.seguidores = jogadorDto.getFollowers();
+        this.localidade = jogadorDto.getLocation() != null ? jogadorDto.getLocation() : null;
+        this.pais = jogadorDto.getCountry() != null ? jogadorDto.getCountry() : null;
+        this.ultimaVezOnline = UtilData.getDateFromTimestamp(Long.parseLong(jogadorDto.getUltimaVezOnline()));
+        this.dataRegistroPlataforma = UtilData.getDateFromTimestamp(Long.parseLong(jogadorDto.getJoined()));
+        this.statusConta = UtilMetodo.retornarStatusContaPlataforma(jogadorDto.getStatus());
+        this.titulo = jogadorDto.getTitle() != null ? jogadorDto.getTitle() : null;
+        this.fide = jogadorDto.getFide();
+        this.streamer = jogadorDto.isStreamer();
+        this.twitchUrl = jogadorDto.getTwitchUrl() != null ? jogadorDto.getTwitchUrl() : null;
     }
 
     public String getAvatarUrl() {
@@ -207,11 +235,34 @@ public class Jogador extends BaseDomain{
         this.dataUltimaAtualizacao = dataUltimaAtualizacao;
     }
 
+    public String getTwitchUrl() {
+        return twitchUrl;
+    }
+
+    public void setTwitchUrl(String twitchUrl) {
+        this.twitchUrl = twitchUrl;
+    }
+
+    @Override
     @PrePersist
     public void prePersist() {
         super.prePersist();
         if (this.dataUltimaAtualizacao == null) {
             this.dataUltimaAtualizacao = new Date();
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Jogador jogador = (Jogador) o;
+        return getJogadorId() == jogador.getJogadorId() && getSeguidores() == jogador.getSeguidores() && getFide() == jogador.getFide() && isStreamer() == jogador.isStreamer() && Objects.equals(getAvatarUrl(), jogador.getAvatarUrl()) && getTipo() == jogador.getTipo() && Objects.equals(getUrlId(), jogador.getUrlId()) && Objects.equals(getUrl(), jogador.getUrl()) && Objects.equals(getNome(), jogador.getNome()) && Objects.equals(getUsername(), jogador.getUsername()) && Objects.equals(getLocalidade(), jogador.getLocalidade()) && Objects.equals(getPais(), jogador.getPais()) && Objects.equals(getUltimaVezOnline(), jogador.getUltimaVezOnline()) && Objects.equals(getDataRegistroPlataforma(), jogador.getDataRegistroPlataforma()) && getStatusConta() == jogador.getStatusConta() && Objects.equals(getTitulo(), jogador.getTitulo()) && Objects.equals(getDataUltimaAtualizacao(), jogador.getDataUltimaAtualizacao());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), getAvatarUrl(), getTipo(), getJogadorId(), getUrlId(), getUrl(), getNome(), getUsername(), getSeguidores(), getLocalidade(), getPais(), getUltimaVezOnline(), getDataRegistroPlataforma(), getStatusConta(), getTitulo(), getFide(), isStreamer(), getDataUltimaAtualizacao());
     }
 }

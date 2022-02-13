@@ -23,8 +23,6 @@ public class JogadorDto {
 
     private String url;
 
-    @NotNull(message = "Deve ser fornecida o nome do jogador")
-    @NotBlank(message = "Deve ser fornecida o nome do jogador")
     private String name;
 
     @NotNull(message = "Deve ser fornecida o username do jogador")
@@ -54,6 +52,9 @@ public class JogadorDto {
     @JsonProperty("is_streamer")
     private boolean streamer;
 
+    @JsonProperty("twitch_url")
+    private String twitchUrl;
+
     public JogadorDto() {
         // Construtor padrao
     }
@@ -64,7 +65,7 @@ public class JogadorDto {
         this.jogadorId = jogador.getJogadorId();
         this.urlId = jogador.getUrlId() != null ? jogador.getUrlId() : null;
         this.url = jogador.getUrl() != null ? jogador.getUrl() : null;
-        this.name = jogador.getNome();
+        this.name = jogador.getNome() != null ? jogador.getNome() : null;
         this.username = jogador.getUsername();
         this.followers = jogador.getSeguidores();
         this.location = jogador.getLocalidade() != null ? jogador.getLocalidade() : null;
@@ -75,6 +76,7 @@ public class JogadorDto {
         this.title = jogador.getTitulo() != null ? jogador.getTitulo() : null;
         this.fide = jogador.getFide();
         this.streamer = jogador.isStreamer();
+        this.twitchUrl = jogador.getTwitchUrl() != null ? jogador.getTwitchUrl() : null;
     }
 
     public String getAvatar() {
@@ -165,12 +167,12 @@ public class JogadorDto {
         this.ultimaVezOnline = ultimaVezOnline;
     }
 
-    public String getDataRegistroPlataforma() {
+    public String getJoined() {
         return joined;
     }
 
-    public void setDataRegistroPlataforma(String dataRegistroPlataforma) {
-        this.joined = dataRegistroPlataforma;
+    public void setJoined(String joined) {
+        this.joined = joined;
     }
 
     public String getStatus() {
@@ -203,5 +205,13 @@ public class JogadorDto {
 
     public void setStreamer(boolean streamer) {
         this.streamer = streamer;
+    }
+
+    public String getTwitchUrl() {
+        return twitchUrl;
+    }
+
+    public void setTwitchUrl(String twitchUrl) {
+        this.twitchUrl = twitchUrl;
     }
 }

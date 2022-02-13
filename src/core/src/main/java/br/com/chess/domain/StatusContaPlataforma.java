@@ -13,10 +13,25 @@ public enum StatusContaPlataforma {
         this.value = value;
     }
 
+    public static StatusContaPlataforma findByCodigo(String group) {
+        if (group == null) {
+            return null;
+        }
+        StatusContaPlataforma result = null;
+        for (StatusContaPlataforma valor : values()) {
+            if (valor.value.equalsIgnoreCase(group.trim())) {
+                result = valor;
+                break;
+            }
+        }
+        return result;
+    }
+
     public String getValue() {
         return value;
     }
 
+    @Override
     public String toString() {
         return this.value;
     }

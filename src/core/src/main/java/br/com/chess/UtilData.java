@@ -3,7 +3,13 @@ package br.com.chess;
 import br.com.chess.exceptions.ServiceError;
 
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.TimeZone;
 
 public class UtilData {
 
@@ -31,4 +37,25 @@ public class UtilData {
 		return DateTimeFormatter.ofPattern("yyyy-MM-dd");
 	}
 
+	public static LocalDateTime getDateTimeFromTimestamp(long timestamp) {
+		if (timestamp == 0)
+			return null;
+		return LocalDateTime.ofInstant(Instant.ofEpochSecond(timestamp), TimeZone
+				.getDefault().toZoneId());
+	}
+
+	public static LocalDate getLocalDateFromTimestamp(long timestamp) {
+		LocalDateTime date = getDateTimeFromTimestamp(timestamp);
+		return date == null ? null : date.toLocalDate();
+	}
+
+	public static Date getDateFromTimestamp(long timestamp){
+		LocalDate localDate = getLocalDateFromTimestamp(timestamp);
+		if (localDate != null) {
+			return Date.from(localDate.atStartOfDay()
+					.atZone(ZoneId.systemDefault())
+					.toInstant());
+		}
+		throw new ServiceError(UtilConstantes.DATA_INVALIDA);
+	}
 }

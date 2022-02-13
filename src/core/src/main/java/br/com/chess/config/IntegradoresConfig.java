@@ -22,8 +22,8 @@ public class IntegradoresConfig {
 	}
 
 	@Bean
-	@Qualifier("LICHESS")
-	public RestTemplate restTemplateLichess(RestTemplateBuilder builder) {
+	@Qualifier("CHESSCOM")
+	public RestTemplate restTemplateChessCom(RestTemplateBuilder builder) {
 
 		return builder.additionalInterceptors(new LoggingInterceptor())
 				.uriTemplateHandler(new DefaultUriBuilderFactory(urlIntegradorChessCom))
@@ -31,8 +31,8 @@ public class IntegradoresConfig {
 	}
 
 	@Bean
-	@Qualifier("CHESS.COM")
-	public RestTemplate restTemplateChessCom(RestTemplateBuilder builder) {
+	@Qualifier("LICHESS")
+	public RestTemplate restTemplateLichess(RestTemplateBuilder builder) {
 
 		return builder.additionalInterceptors(new LoggingInterceptor())
 				.uriTemplateHandler(new DefaultUriBuilderFactory(urlIntegradorLichess))

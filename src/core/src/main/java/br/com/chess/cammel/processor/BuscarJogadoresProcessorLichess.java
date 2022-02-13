@@ -27,11 +27,13 @@ public class BuscarJogadoresProcessorLichess implements Processor {
     public void process(Exchange exchange) throws Exception {
         logger.info("Começando a busca de jogadores");
 
-        RequestEntity request = RequestEntity.get("/player")
+        RequestEntity<Void> request = RequestEntity.get("/player")
                 .accept(MediaType.APPLICATION_JSON).build();
 
         ResponseEntity<String> response = restTemplate.exchange("/player", HttpMethod.GET, request, new ParameterizedTypeReference<String>() {
         });
-        System.out.println(response.getBody());
+
+        logger.info("Dados do jogador encontrado: {}", response.getBody());
+
     }
 }

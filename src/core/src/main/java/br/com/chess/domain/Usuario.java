@@ -34,7 +34,7 @@ public class Usuario extends BaseDomain {
 	@ManyToOne @JoinColumn(name="perfil_id", nullable=false)
 	private Perfil perfil;
 
-	@Column(name="cpf", nullable=false,unique = true)
+	@Column(name="cpf", nullable=true,unique = true)
 	private String cpf;
 
 	public String getNome() {

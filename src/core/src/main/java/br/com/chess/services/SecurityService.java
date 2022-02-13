@@ -89,7 +89,7 @@ public class SecurityService {
 				resultado.setToken(this.criarToken(usuario, agora.getTime()));
 				resultado.setTimeToLive(Long.parseLong(this.configService.info("jwt.ttl")));
 				resultado.setUsername(usuario.getEmail());
-				resultado.setRoles(new ArrayList<String>());
+				resultado.setRoles(new ArrayList<>());
 				for (Permissao perm : usuario.getPerfil().getPermissoes()) {
 					resultado.getRoles().add(perm.getAuthority());
 				}

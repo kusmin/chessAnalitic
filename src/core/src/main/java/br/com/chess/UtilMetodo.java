@@ -1,5 +1,6 @@
 package br.com.chess;
 
+import br.com.chess.domain.StatusContaPlataforma;
 import br.com.chess.exceptions.ServiceError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,4 +36,11 @@ public class UtilMetodo {
         return null;
     }
 
+    public static StatusContaPlataforma retornarStatusContaPlataforma(String status) {
+        try {
+            return StatusContaPlataforma.findByCodigo(status);
+        }catch (Exception e) {
+            throw new ServiceError(UtilConstantes.TIPO_STATUS_PLATAFORMA_DESCONHECIDO);
+        }
+    }
 }

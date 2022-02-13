@@ -5,10 +5,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
-import java.util.function.Consumer;
 
 import br.com.chess.UtilMetodo;
 import br.com.chess.domain.Arquivo;
@@ -81,17 +81,7 @@ public class StorageS3 implements StorageService, HealthIndicator {
 
 	@Override
 	public Arquivo store(String nomeOriginal, String bucket, Usuario usuario, InputStream conteudo, boolean publico) {
-		if (nomeOriginal == null) {
-			throw new StorageError("Nome original indefinido");
-		}
-
-		if (usuario == null) {
-			throw new StorageError(USUARIO_INDEFINIDO);
-		}
-
-		if (conteudo == null) {
-			throw new StorageError("Conteúdo indefinido");
-		}
+		validarInformacoes(nomeOriginal, usuario, conteudo);
 
 		Arquivo arquivo = new Arquivo();
 		arquivo.setBucket(bucket);
@@ -99,24 +89,11 @@ public class StorageS3 implements StorageService, HealthIndicator {
 
 		arquivo.setOriginalName(nomeOriginal);
 		String[] componentes = nomeOriginal.split("\\.");
-		String extensao = componentes[componentes.length - 1];
-		if (extensao != null) {
-			extensao = extensao.trim().toLowerCase();
-		}
-		String contentType;
-		if ("png".equals(extensao)) {
-			contentType = "image/png";
-		} else if ("jpeg".equals(extensao) || "jpg".equals(extensao)) {
-			contentType = "image/jpeg";
-		} else if ("gif".equals(extensao)) {
-			contentType = "image/gif";
-		} else {
-			contentType = "application/octet-stream";
-		}
+		String contentType = getContentType(componentes);
 		arquivo.setUuid(arquivo.getUuid() + "." + componentes[componentes.length - 1]);
 		arquivo.setUsuario(usuario);
 		arquivo.setExcluido(false);
-		arquivo.setCreatedAt(new java.util.Date());
+		arquivo.setCreatedAt(new Date());
 		arquivo.setContentType(contentType);
 
 		File arquivoTemp = null;
@@ -145,6 +122,38 @@ public class StorageS3 implements StorageService, HealthIndicator {
 			}
 		}
 		return this.arquivoRepository.save(arquivo);
+	}
+
+	private void validarInformacoes(String nomeOriginal, Usuario usuario, InputStream conteudo) {
+		if (nomeOriginal == null) {
+			throw new StorageError("Nome original indefinido");
+		}
+
+		if (usuario == null) {
+			throw new StorageError(USUARIO_INDEFINIDO);
+		}
+
+		if (conteudo == null) {
+			throw new StorageError("Conteúdo indefinido");
+		}
+	}
+
+	private static String getContentType(String[] componentes) {
+		String extensao = componentes[componentes.length - 1];
+		if (extensao != null) {
+			extensao = extensao.trim().toLowerCase();
+		}
+		String contentType;
+		if ("png".equals(extensao)) {
+			contentType = "image/png";
+		} else if ("jpeg".equals(extensao) || "jpg".equals(extensao)) {
+			contentType = "image/jpeg";
+		} else if ("gif".equals(extensao)) {
+			contentType = "image/gif";
+		} else {
+			contentType = "application/octet-stream";
+		}
+		return contentType;
 	}
 
 	@Override
@@ -245,17 +254,7 @@ public class StorageS3 implements StorageService, HealthIndicator {
 
 	@Override
 	public Arquivo replace(String nomeOriginal, String bucket, Usuario usuario, InputStream conteudo, Arquivo arquivo) {
-		if (nomeOriginal == null) {
-			throw new StorageError("Nome original indefinido");
-		}
-
-		if (usuario == null) {
-			throw new StorageError(USUARIO_INDEFINIDO);
-		}
-
-		if (conteudo == null) {
-			throw new StorageError("Conteúdo indefinido");
-		}
+		validarInformacoes(nomeOriginal, usuario, conteudo);
 
 		DeleteObjectRequest request = DeleteObjectRequest.builder().bucket(arquivo.getBucket()).key(arquivo.getUuid())
 				.build();
@@ -269,7 +268,7 @@ public class StorageS3 implements StorageService, HealthIndicator {
 		arquivo.setUuid(arquivo.getUuid() + "." + componentes[componentes.length - 1]);
 		arquivo.setUsuario(usuario);
 		arquivo.setExcluido(false);
-		arquivo.setCreatedAt(new java.util.Date());
+		arquivo.setCreatedAt(new Date());
 
 		File arquivoTemp = null;
 		try {

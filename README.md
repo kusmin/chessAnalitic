@@ -1,6 +1,6 @@
-# boot-itexto
+# Api de chess analises
 
-Plataforma Boot itexto
+Plataforma de analise comparativa de desempenho enxadristico
 
 ## Inicialização
 

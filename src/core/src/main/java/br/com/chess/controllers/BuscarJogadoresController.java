@@ -1,6 +1,8 @@
 package br.com.chess.controllers;
 
 import br.com.chess.dto.JogadorDto;
+import br.com.chess.exceptions.IntegrationError;
+import br.com.chess.exceptions.NotFoundError;
 import br.com.chess.services.JogadorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +23,7 @@ public class BuscarJogadoresController {
 
     @Secured({"ROLE_ADMIN", "ROLE_USER"})
     @GetMapping("/api/v1/player/{user}/platform/{type}")
-    public ResponseEntity<JogadorDto> getJogadorPlataforma(@PathVariable String user, @PathVariable String type){
+    public ResponseEntity<JogadorDto> getJogadorPlataforma(@PathVariable String user, @PathVariable String type) throws NotFoundError, IntegrationError {
         return ResponseEntity.ok().body(new JogadorDto(this.jogadorService.buscarJogador(user, type)));
     }
 }
