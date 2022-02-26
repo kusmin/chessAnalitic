@@ -1,0 +1,121 @@
+<div id="container" class="is-marginless is-paddingless" >
+  <ngx-spinner></ngx-spinner>  
+  <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
+
+    <div class="navbar-brand">
+        <a class="navbar-item logo" [routerLink]="['home']">
+          <figure>
+            <img src="/assets/images/logo.png"  (click)="goHome()" class="logo is-marginless is-paddingless"/>
+          </figure>
+          <div class="vr"></div>
+         Dashboard
+        </a>
+        <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" >
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+          </a>
+    </div>
+
+    <div  class="navbar-menu">
+      <div class="navbar-start">
+        
+        <a class="{{classeAbaCampanha == 'is-active' ? 'navbar-item little-cards-show card' : 'navbar-item little-cards'}}" [routerLink]="['/campanha']" (click)="alterarAba('campanha')" *ngIf="statusLogin == 'loggedIn'">
+          <span class="icon">
+            <img src="../assets/icones/megaphone.png" />
+          </span>
+          <br/>
+          Campanha
+        </a>
+        <a class="{{classeAbaEngajamento == 'is-active' ? 'navbar-item little-cards-show card' : 'navbar-item little-cards'}}" [routerLink]="['/engajamento']" (click)="alterarAba('engajamento')" *ngIf="statusLogin == 'loggedIn'">
+          <span class="icon">
+            <img src="../assets/icones/trophy.png" />
+          </span>
+          <br/>
+          Engajamento
+        </a>
+        <a class="{{classeAbaAdesao == 'is-active' ? 'navbar-item little-cards-show card' : 'navbar-item little-cards'}}" [routerLink]="['/adesao']" (click)="alterarAba('adesao')" *ngIf="statusLogin == 'loggedIn'">
+          <span class="icon">
+            <img src="../assets/icones/user.png" />
+          </span>
+          <br/>
+          Adesão
+        </a>
+        <a class="{{classeAbaFeedbacks == 'is-active' ? 'navbar-item little-cards-show card' : 'navbar-item little-cards'}}" [routerLink]="['/feedbacks']" (click)="alterarAba('feedbacks')" *ngIf="statusLogin == 'loggedIn'">
+          <span class="icon">
+            <img src="../assets/icones/chat-box.png" />
+          </span>
+          <br/>
+          Feedbacks
+        </a>
+      </div>
+
+      <div class="navbar-end" *ngIf="statusLogin == 'loggedIn'" style="margin-right: 10em;">
+        <div class="navbar-item" style="margin-right: 5em;">
+          <div class="{{ showModal ? 'dropdown is-active' : 'dropdown'}}">
+            <div class="dropdown-trigger">
+              <span style="display: flex; flex-direction: column; align-items: center;">
+                <figure (click)="showHideModal()" class="icon" style="cursor: pointer;">
+                  <img src="../assets/icones/question.png" />
+                </figure>
+                Ajuda
+              </span>
+            </div>
+            <div class="dropdown-menu" id="dropdown-menu2" role="menu" style="left: -371px; min-width: 27rem; top: 154%;">
+              <div class="dropdown-content">
+                <span (click)="showHideModal()" style="cursor: pointer; display: block; text-align: right; margin-right: 15px; color: rgb(60, 0, 96);"><i class="fas fa-times-circle"></i></span>
+                <div class="dropdown-item" style="padding: 3em;">
+                  <p style="margin-bottom: 3em; color: rgb(60, 0, 96);">Lorem, ipsum dolor sit amet consectetur adipisicing elit. Cum necessitatibus repudiandae non officiis ut autem eos soluta exercitationem inventore quia consequuntur minus, sequi magnam quaerat eaque rem, accusantium, iure nostrum!</p>
+                  <h1 class="title" style="color: rgb(168, 71, 226);font-weight: 300;">Mariana Muchon</h1>
+                  <h2 class="subtitle" style="color: rgb(60, 0, 96);">(31) 3333-3333</h2>
+                  <h2 style="color: rgb(60, 0, 96);">mari@weex.digital</h2>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="navbar-item">
+          <div class="{{ showModalLogout ? 'dropdown is-active' : 'dropdown'}}">
+            <div class="dropdown-trigger">
+              <span style="display: flex; flex-direction: column; align-items: center;">
+                <figure (click)="showHideModalLogout()"  class="icon" style="cursor: pointer;">
+                  <img src="../assets/icones/question.png" />
+                </figure>
+                Olá, Usuário
+              </span>
+            </div>
+            <div class="dropdown-menu" id="dropdown-menu2" role="menu" style="min-width: 0; top: 154%;">
+              <div class="dropdown-content">
+                <div class="dropdown-item">
+                  <a (click)="logout()" class="button is-primary">Sair</a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </nav>
+
+
+  <div class="nav is-fixed-top" >  
+
+    <div class="entrar">
+      
+    </div>
+  </div>
+  
+  <div class="conteudo">
+      <router-outlet></router-outlet>
+  </div>
+  
+  <footer class="footer is-marginless is-paddingless columns" style="margin-top: 100px !important;" >
+    <div class="conteudo">
+      <span>Versão - {{version}}</span>
+    </div>
+  </footer>
+  <div class="content has-text-centered" style="margin-top: 2.0em;">
+    
+  </div>
+</div>

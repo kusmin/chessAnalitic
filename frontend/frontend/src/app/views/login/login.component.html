@@ -1,0 +1,24 @@
+<div class="columns is-centered formulario">
+    <div class="column is-one-quarter">
+      <h1 class="title is-primary">Entrar</h1>
+      <form class="form" ngNativeValidate (submit)="entrar()" >
+        <div class="field">
+          <label class="label">E-mail</label>
+          <input class="input" type="text" placeholder="E-mail" [(ngModel)]="credenciais.username" name="username" required/>
+        </div>
+        
+        <div class="field">
+          <label class="label">Senha</label>
+          <input class="input" type="password" placeholder="Senha" [(ngModel)]="credenciais.password" name="password" required/>
+        </div>
+        <div style="text-align:center;">
+          <div *ngIf="mensagemErro" class="notification is-warning">
+            {{mensagemErro}}
+          </div>
+          
+          <input type="submit" class="button is-primary" value="Entrar"/>
+          <br/><br/>
+        </div>
+      </form>
+    </div>
+  </div>

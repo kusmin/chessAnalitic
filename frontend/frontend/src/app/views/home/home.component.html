@@ -1,0 +1,32 @@
+<h1 class="title">O que você quer ver hoje?</h1>
+
+<div class="tile is-ancestor">
+    <div class="tile is-vertical is-12">
+      <div class="tile">
+        <div class="tile is-parent">
+          <article class="tile is-child notification navegacao" [routerLink]="['/campanha']" style="background-color: rgb(60, 0, 96); color: white;">
+            <p class="title">Campanha</p>
+            <p class="subtitle">Aqui você encontra os principais dados e estatisticas sobre a campanha</p>
+          </article>
+        </div>
+        <div class="tile is-parent">
+          <article class="tile is-child notification navegacao" [routerLink]="['/engajamento']" style="background-color: rgb(112, 12, 184); color: white;">
+            <p class="title">Engajamento</p>
+            <p class="subtitle">Aqui você confere toda a relação de dinamicas feitas pelo participantes durante a campanha</p>
+          </article>
+        </div>
+        <div class="tile is-parent">
+          <article class="tile is-child notification navegacao" [routerLink]="['/adesao']" style="background-color: rgb(60, 0, 96); color: white;">
+            <p class="title">Adesão</p>
+            <p class="subtitle">Aqui você encontra, em detalhes, a quantidade de participantes que aderiram a campanha</p>
+          </article>
+        </div>
+        <div class="tile is-parent">
+          <article class="tile is-child notification navegacao" [routerLink]="['/feedbacks']" style="background-color: rgb(112, 12, 184); color: white;">
+            <p class="title">Feedbacks</p>
+            <p class="subtitle">Aqui você confere os feedbacks detalhados dos participantes sobre a campanha</p>
+          </article>
+        </div>
+      </div>
+    </div>
+</div>

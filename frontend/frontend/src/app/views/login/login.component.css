@@ -1,0 +1,15 @@
+.formulario {
+    margin: 2.0em;
+}
+
+.formulario .title {
+    text-align: center;
+}
+
+.button{
+    background-color: #3C0060;
+}
+
+.button:hover{
+    background-color: #6702a5;;
+}
