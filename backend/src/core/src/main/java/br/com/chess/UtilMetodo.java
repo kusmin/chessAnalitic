@@ -1,8 +1,8 @@
 package br.com.chess;
 
-import br.com.chess.domain.StatusContaPlataforma;
-import br.com.chess.domain.TipoMaestria;
-import br.com.chess.domain.TipoPlataforma;
+import br.com.chess.domain.enums.StatusContaPlataforma;
+import br.com.chess.domain.enums.TipoMaestria;
+import br.com.chess.domain.enums.TipoPlataforma;
 import br.com.chess.exceptions.ServiceError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -2,5 +2,5 @@ projectKey=chess-front
 serverUrl=http://localhost:9400
 serverVersion=9.3.0.51899
 dashboardUrl=http://localhost:9400/dashboard?id=chess-front
-ceTaskId=AX84csEPIKQRskebac-D
-ceTaskUrl=http://localhost:9400/api/ce/task?id=AX84csEPIKQRskebac-D
+ceTaskId=AX9BaoZzRQzIUM4oHlas
+ceTaskUrl=http://localhost:9400/api/ce/task?id=AX9BaoZzRQzIUM4oHlas

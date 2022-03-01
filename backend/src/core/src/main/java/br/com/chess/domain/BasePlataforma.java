@@ -1,5 +1,8 @@
 package br.com.chess.domain;
 
+import br.com.chess.domain.enums.TipoMaestria;
+import br.com.chess.domain.enums.TipoPlataforma;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;

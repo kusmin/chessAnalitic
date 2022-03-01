@@ -2,7 +2,11 @@ package br.com.chess.domain;
 
 import br.com.chess.UtilData;
 import br.com.chess.UtilMetodo;
+import br.com.chess.domain.enums.StatusContaPlataforma;
+import br.com.chess.domain.enums.TipoPlataforma;
+import br.com.chess.domain.estaticas.EstatisticaJogador;
 import br.com.chess.dto.JogadorDto;
+import br.com.chess.dto.estatisticas.EstatisticasDto;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
@@ -63,6 +67,9 @@ public class Jogador extends BasePlataforma{
     @Column(name = "twitch", nullable = true, length = 128)
     private String twitchUrl;
 
+    @OneToOne(orphanRemoval = true)
+    private EstatisticaJogador estatisticaJogador;
+
     public Jogador() {
         super();
         // Construtor padrao
@@ -85,6 +92,26 @@ public class Jogador extends BasePlataforma{
         this.fide = jogadorDto.getFide();
         this.streamer = jogadorDto.isStreamer();
         this.twitchUrl = jogadorDto.getTwitchUrl() != null ? jogadorDto.getTwitchUrl() : null;
+    }
+
+    public Jogador(JogadorDto jogadorDto, TipoPlataforma tipoPlataforma, EstatisticasDto estatisticas) {
+        super(tipoPlataforma, jogadorDto.getTitle() != null ? UtilMetodo.retornarTipoMaestria(jogadorDto.getTitle()) : null);
+        this.avatarUrl = jogadorDto.getAvatar() != null ? jogadorDto.getAvatar() : null;
+        this.jogadorId = jogadorDto.getJogadorId();
+        this.urlId = jogadorDto.getUrlId() != null ? jogadorDto.getUrlId() : null;
+        this.url = jogadorDto.getUrl() != null ? jogadorDto.getUrl() : null;
+        this.nome = jogadorDto.getName() != null ? jogadorDto.getUrl() : null;
+        this.username = jogadorDto.getUsername();
+        this.seguidores = jogadorDto.getFollowers();
+        this.localidade = jogadorDto.getLocation() != null ? jogadorDto.getLocation() : null;
+        this.pais = jogadorDto.getCountry() != null ? jogadorDto.getCountry() : null;
+        this.ultimaVezOnline = UtilData.getDateFromTimestamp(Long.parseLong(jogadorDto.getUltimaVezOnline()));
+        this.dataRegistroPlataforma = UtilData.getDateFromTimestamp(Long.parseLong(jogadorDto.getJoined()));
+        this.statusConta = UtilMetodo.retornarStatusContaPlataforma(jogadorDto.getStatus());
+        this.fide = jogadorDto.getFide();
+        this.streamer = jogadorDto.isStreamer();
+        this.twitchUrl = jogadorDto.getTwitchUrl() != null ? jogadorDto.getTwitchUrl() : null;
+        this.estatisticaJogador = new EstatisticaJogador(this,estatisticas);
     }
 
     public String getAvatarUrl() {
@@ -207,17 +234,25 @@ public class Jogador extends BasePlataforma{
         this.twitchUrl = twitchUrl;
     }
 
+    public EstatisticaJogador getEstatisticaJogador() {
+        return estatisticaJogador;
+    }
+
+    public void setEstatisticaJogador(EstatisticaJogador estatisticaJogador) {
+        this.estatisticaJogador = estatisticaJogador;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Jogador jogador = (Jogador) o;
-        return getJogadorId() == jogador.getJogadorId() && getSeguidores() == jogador.getSeguidores() && getFide() == jogador.getFide() && isStreamer() == jogador.isStreamer() && Objects.equals(getAvatarUrl(), jogador.getAvatarUrl()) && getTipo() == jogador.getTipo() && Objects.equals(getUrlId(), jogador.getUrlId()) && Objects.equals(getUrl(), jogador.getUrl()) && Objects.equals(getNome(), jogador.getNome()) && Objects.equals(getUsername(), jogador.getUsername()) && Objects.equals(getLocalidade(), jogador.getLocalidade()) && Objects.equals(getPais(), jogador.getPais()) && Objects.equals(getUltimaVezOnline(), jogador.getUltimaVezOnline()) && Objects.equals(getDataRegistroPlataforma(), jogador.getDataRegistroPlataforma()) && getStatusConta() == jogador.getStatusConta() && Objects.equals(getTitulo(), jogador.getTitulo()) && Objects.equals(getDataUltimaAtualizacao(), jogador.getDataUltimaAtualizacao());
+        return getJogadorId() == jogador.getJogadorId() && getSeguidores() == jogador.getSeguidores() && getFide() == jogador.getFide() && isStreamer() == jogador.isStreamer() && Objects.equals(getAvatarUrl(), jogador.getAvatarUrl()) && Objects.equals(getUrlId(), jogador.getUrlId()) && Objects.equals(getUrl(), jogador.getUrl()) && Objects.equals(getNome(), jogador.getNome()) && Objects.equals(getUsername(), jogador.getUsername()) && Objects.equals(getLocalidade(), jogador.getLocalidade()) && Objects.equals(getPais(), jogador.getPais()) && Objects.equals(getUltimaVezOnline(), jogador.getUltimaVezOnline()) && Objects.equals(getDataRegistroPlataforma(), jogador.getDataRegistroPlataforma()) && getStatusConta() == jogador.getStatusConta();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), getAvatarUrl(), getTipo(), getJogadorId(), getUrlId(), getUrl(), getNome(), getUsername(), getSeguidores(), getLocalidade(), getPais(), getUltimaVezOnline(), getDataRegistroPlataforma(), getStatusConta(), getTitulo(), getFide(), isStreamer(), getDataUltimaAtualizacao());
+        return Objects.hash(super.hashCode(), getAvatarUrl(), getJogadorId(), getUrlId(), getUrl(), getNome(), getUsername(), getSeguidores(), getLocalidade(), getPais(), getUltimaVezOnline(), getDataRegistroPlataforma(), getStatusConta(), getFide(), isStreamer());
     }
 }

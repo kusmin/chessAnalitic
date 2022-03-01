@@ -2,16 +2,19 @@ package br.com.chess.services;
 
 import br.com.chess.UtilConstantes;
 import br.com.chess.UtilData;
+import br.com.chess.domain.estaticas.EstatisticaJogador;
 import br.com.chess.domain.Jogador;
 import br.com.chess.domain.ListaJogadoresTitulados;
-import br.com.chess.domain.TipoMaestria;
-import br.com.chess.domain.TipoPlataforma;
+import br.com.chess.domain.enums.TipoMaestria;
+import br.com.chess.domain.enums.TipoPlataforma;
 import br.com.chess.dto.BuscaJogadorDto;
 import br.com.chess.dto.JogadorDto;
 import br.com.chess.dto.PlayersTituladosDto;
+import br.com.chess.dto.estatisticas.EstatisticasDto;
 import br.com.chess.exceptions.IntegrationError;
 import br.com.chess.exceptions.NotFoundError;
 import br.com.chess.exceptions.ServiceError;
+import br.com.chess.repositories.EstatisticaJogadorRepository;
 import br.com.chess.repositories.JogadorRepository;
 import br.com.chess.repositories.LIstaJogadoresTituladosRepository;
 import org.apache.camel.ProducerTemplate;
@@ -42,6 +45,7 @@ public class JogadorService {
     private final JogadorRepository jogadorRepository;
     private final EntityManager entityManager;
     private final LIstaJogadoresTituladosRepository lIstaJogadoresTituladosRepository;
+    private final EstatisticaJogadorRepository estatisticaJogadorRepository;
 
     @Value("${atualizar.jogador}")
     private int prazoAtualizar;
@@ -49,11 +53,12 @@ public class JogadorService {
     private static final Logger logger = LoggerFactory.getLogger("JogadorService");
 
     @Autowired
-    public JogadorService(ProducerTemplate producerTemplate, JogadorRepository jogadorRepository, EntityManager entityManager, LIstaJogadoresTituladosRepository lIstaJogadoresTituladosRepository) {
+    public JogadorService(ProducerTemplate producerTemplate, JogadorRepository jogadorRepository, EntityManager entityManager, LIstaJogadoresTituladosRepository lIstaJogadoresTituladosRepository, EstatisticaJogadorRepository estatisticaJogadorRepository) {
         this.producerTemplate = producerTemplate;
         this.jogadorRepository = jogadorRepository;
         this.entityManager = entityManager;
         this.lIstaJogadoresTituladosRepository = lIstaJogadoresTituladosRepository;
+        this.estatisticaJogadorRepository = estatisticaJogadorRepository;
     }
 
 
@@ -70,10 +75,22 @@ public class JogadorService {
         if((jogador == null) && (jogadorDto == null)){
             throw new NotFoundError(UtilConstantes.JOGADOR_DESCONHECIDO);
         }
+        EstatisticasDto estatisticas = this.buscarEstatisticasJogador(user, tipoPlataforma);
+
         if(jogador == null){
-            return this.criarJogador(jogadorDto, tipoPlataforma);
+            return this.criarJogador(jogadorDto, tipoPlataforma, estatisticas);
         }
-        return this.updateJogador(jogadorDto, jogador);
+        return this.updateJogador(jogadorDto, jogador, estatisticas);
+    }
+
+    private EstatisticasDto buscarEstatisticasJogador(String user, TipoPlataforma type) throws IntegrationError {
+        EstatisticasDto estatisticasDto = null;
+        try{
+            estatisticasDto = (EstatisticasDto)producerTemplate.requestBodyAndHeader("direct://buscar-jogador-estatisticas",user,"plataforma", type );
+        }catch(Exception e){
+            throw new IntegrationError(UtilConstantes.CHESS_COM, e.getMessage());
+        }
+        return estatisticasDto;
     }
 
     private JogadorDto getJogadorDto(String user, TipoPlataforma tipoPlataforma) throws IntegrationError {
@@ -87,7 +104,7 @@ public class JogadorService {
     }
 
 
-    private Jogador updateJogador(JogadorDto jogadorDto, Jogador jogador) {
+    private Jogador updateJogador(JogadorDto jogadorDto, Jogador jogador, EstatisticasDto estatisticas) {
         if(jogadorDto.getAvatar() != null) jogador.setAvatarUrl(jogadorDto.getAvatar());
         jogador.setJogadorId(jogadorDto.getJogadorId());
         if(jogadorDto.getUrlId() != null) jogador.setAvatarUrl(jogador.getUrlId());
@@ -103,11 +120,15 @@ public class JogadorService {
         jogador.setStreamer(jogadorDto.isStreamer());
         jogador.setUltimaVezOnline(new Date());
         if(jogadorDto.getTwitchUrl() != null)jogador.setTwitchUrl(jogador.getTwitchUrl());
+        jogador.setEstatisticaJogador(estatisticaJogadorRepository.save(new EstatisticaJogador(jogador,estatisticas)));
         return this.jogadorRepository.save(jogador);
     }
 
-    private Jogador criarJogador(JogadorDto jogadorDto, TipoPlataforma tipoPlataforma) {
-        return jogadorRepository.save(new Jogador(jogadorDto, tipoPlataforma));
+    private Jogador criarJogador(JogadorDto jogadorDto, TipoPlataforma tipoPlataforma, EstatisticasDto estatisticas) {
+        Jogador jogador = jogadorRepository.save(new Jogador(jogadorDto, tipoPlataforma));
+        EstatisticaJogador estatisticaJogador = estatisticaJogadorRepository.save(new EstatisticaJogador(jogador, estatisticas));
+        jogador.setEstatisticaJogador(estatisticaJogador);
+        return jogadorRepository.save(jogador);
     }
 
     private boolean confirmarTempoAtualizacao(Date dataUltimaAtualizacao) {

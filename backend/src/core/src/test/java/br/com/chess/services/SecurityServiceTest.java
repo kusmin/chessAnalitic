@@ -49,7 +49,7 @@ class SecurityServiceTest {
 		
 		for(Object key : props.keySet()) {
 			Permissao permissao = permissaoRepository.findByAuthority(key.toString());
-			assertNotNull(permissao, "Permissão não encontrada: " + key.toString());
+			assertNotNull(permissao, "Permissão não encontrada: " + key);
 		}
 		
 		Perfil perfilAdmin = perfilRepository.findByNome("Administrador");
@@ -61,7 +61,7 @@ class SecurityServiceTest {
 			assertTrue(perfilAdmin.getPermissoes().contains(permissao), "Permissão não está no perfil: " + permissao.getAuthority());
 		}
 		
-		Usuario usuarioAdmin = usuarioRepository.findByEmail("admin@itexto.com.br");
+		Usuario usuarioAdmin = usuarioRepository.findByEmail("renan.lagee@gmail.com.br");
 		assertNotNull(usuarioAdmin, "Usuário admin não foi criado");
 		assertNotNull(usuarioAdmin.getHashSenha(), "Não foi definida a senha padrão para o usuário admin");
 		assertEquals(perfilAdmin, usuarioAdmin.getPerfil(), "Não foi definido o perfil administrativo para o usuário");

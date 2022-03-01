@@ -1,5 +1,7 @@
 package br.com.chess.domain;
 
+import br.com.chess.domain.enums.TipoMaestria;
+import br.com.chess.domain.enums.TipoPlataforma;
 import br.com.chess.dto.PlayersTituladosDto;
 import org.hibernate.envers.Audited;
 

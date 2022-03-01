@@ -2,7 +2,7 @@ package br.com.chess.cammel;
 
 import br.com.chess.cammel.processor.ErroProcessor;
 import br.com.chess.cammel.processor.buscar_jogadores_titulados.BuscarJogadoresTituladosChessCom;
-import br.com.chess.domain.TipoPlataforma;
+import br.com.chess.domain.enums.TipoPlataforma;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

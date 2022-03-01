@@ -1,4 +1,4 @@
-package br.com.chess.domain;
+package br.com.chess.domain.enums;
 
 public enum StatusContaPlataforma {
 

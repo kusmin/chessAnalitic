@@ -2,10 +2,11 @@ package br.com.chess.controllers;
 
 import br.com.chess.BaseTest;
 import br.com.chess.domain.Jogador;
-import br.com.chess.domain.TipoPlataforma;
+import br.com.chess.domain.enums.TipoPlataforma;
 import br.com.chess.dto.Autorizacao;
 import br.com.chess.dto.Erro;
 import br.com.chess.dto.JogadorDto;
+import br.com.chess.dto.JogadorResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -54,14 +55,16 @@ class BuscaJogadorControllerTest extends BaseTest {
 
         // Sem autorização
         for(String username:JOGADORES){
-            JogadorDto jogadorDto = this.testClient.get().uri(String.format("/api/v1/player/%s/platform/%s",username, TipoPlataforma.CHESS_COM))
+            JogadorResponseDto jogadorResponseDto = this.testClient.get().uri(String.format("/api/v1/player/%s/platform/%s",username, TipoPlataforma.CHESS_COM))
                     .header("Authorization", auth.getToken())
                     .exchange().expectStatus().isEqualTo(HttpStatus.OK)
-                    .expectBody(JogadorDto.class).returnResult().getResponseBody();
+                    .expectBody(JogadorResponseDto.class).returnResult().getResponseBody();
 
-            assertNotNull(jogadorDto);
-            assertNotNull(jogadorDto.getUsername());
-            assertEquals(username, jogadorDto.getUsername());
+            assertNotNull(jogadorResponseDto);
+            assertNotNull(jogadorResponseDto.getJogador());
+            assertNotNull(jogadorResponseDto.getEstatisticas());
+            assertNotNull(jogadorResponseDto.getJogador().getUsername());
+            assertEquals(username, jogadorResponseDto.getJogador().getUsername());
 
             Jogador jogador = this.jogadorRepository.findByUsernameAndTipo(username, TipoPlataforma.CHESS_COM);
             assertNotNull(jogador);
@@ -71,14 +74,15 @@ class BuscaJogadorControllerTest extends BaseTest {
         }
         // Edicao
         for(String username:JOGADORES){
-            JogadorDto jogadorDto = this.testClient.get().uri(String.format("/api/v1/player/%s/platform/%s",username, TipoPlataforma.CHESS_COM))
+            JogadorResponseDto jogadorResponseDto = this.testClient.get().uri(String.format("/api/v1/player/%s/platform/%s",username, TipoPlataforma.CHESS_COM))
                     .header("Authorization", auth.getToken())
                     .exchange().expectStatus().isEqualTo(HttpStatus.OK)
-                    .expectBody(JogadorDto.class).returnResult().getResponseBody();
-
-            assertNotNull(jogadorDto);
-            assertNotNull(jogadorDto.getUsername());
-            assertEquals(username, jogadorDto.getUsername());
+                    .expectBody(JogadorResponseDto.class).returnResult().getResponseBody();
+            assertNotNull(jogadorResponseDto);
+            assertNotNull(jogadorResponseDto.getJogador());
+            assertNotNull(jogadorResponseDto.getEstatisticas());
+            assertNotNull(jogadorResponseDto.getJogador().getUsername());
+            assertEquals(username, jogadorResponseDto.getJogador().getUsername());
         }
     }
 
@@ -93,14 +97,15 @@ class BuscaJogadorControllerTest extends BaseTest {
 
         // Sem autorização
         for(String username:JOGADORES_GM){
-            JogadorDto jogadorDto = this.testClient.get().uri(String.format("/api/v1/player/%s/platform/%s",username, TipoPlataforma.CHESS_COM))
+            JogadorResponseDto jogadorResponseDto = this.testClient.get().uri(String.format("/api/v1/player/%s/platform/%s",username, TipoPlataforma.CHESS_COM))
                     .header("Authorization", auth.getToken())
                     .exchange().expectStatus().isEqualTo(HttpStatus.OK)
-                    .expectBody(JogadorDto.class).returnResult().getResponseBody();
+                    .expectBody(JogadorResponseDto.class).returnResult().getResponseBody();
 
-            assertNotNull(jogadorDto);
-            assertNotNull(jogadorDto.getUsername());
-            assertEquals(username, jogadorDto.getUsername());
+            assertNotNull(jogadorResponseDto);
+            assertNotNull(jogadorResponseDto.getEstatisticas());
+            assertNotNull(jogadorResponseDto.getJogador().getUsername());
+            assertEquals(username, jogadorResponseDto.getJogador().getUsername());
 
             Jogador jogador = this.jogadorRepository.findByUsernameAndTipo(username, TipoPlataforma.CHESS_COM);
             assertNotNull(jogador);

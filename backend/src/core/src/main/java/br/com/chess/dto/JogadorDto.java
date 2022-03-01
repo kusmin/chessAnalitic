@@ -2,7 +2,6 @@ package br.com.chess.dto;
 
 import br.com.chess.UtilData;
 import br.com.chess.domain.Jogador;
-import br.com.chess.domain.TipoMaestria;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import javax.validation.constraints.NotBlank;

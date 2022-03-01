@@ -37,7 +37,7 @@ class AuthControllerTest extends BaseTest {
 	@Test
 	void testAutenticacaoBemSucedida() {
 
-		Credenciais credenciais = new Credenciais("admin@itexto.com.br", "admin1234");
+		Credenciais credenciais = new Credenciais("renan.lagee@gmail.com", "admin1234");
 		ResponseEntity<Autorizacao> result = controller.autenticar(credenciais);
 
 		assertEquals(200, result.getStatusCodeValue(), "Deveria ter retornado o código 200");
