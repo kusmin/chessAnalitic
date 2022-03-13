@@ -16,7 +16,7 @@ import br.com.chess.exceptions.NotFoundError;
 import br.com.chess.exceptions.ServiceError;
 import br.com.chess.repositories.EstatisticaJogadorRepository;
 import br.com.chess.repositories.JogadorRepository;
-import br.com.chess.repositories.LIstaJogadoresTituladosRepository;
+import br.com.chess.repositories.ListaJogadoresTituladosRepository;
 import org.apache.camel.ProducerTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +44,7 @@ public class JogadorService {
     private final ProducerTemplate producerTemplate;
     private final JogadorRepository jogadorRepository;
     private final EntityManager entityManager;
-    private final LIstaJogadoresTituladosRepository lIstaJogadoresTituladosRepository;
+    private final ListaJogadoresTituladosRepository listaJogadoresTituladosRepository;
     private final EstatisticaJogadorRepository estatisticaJogadorRepository;
 
     @Value("${atualizar.jogador}")
@@ -53,11 +53,11 @@ public class JogadorService {
     private static final Logger logger = LoggerFactory.getLogger("JogadorService");
 
     @Autowired
-    public JogadorService(ProducerTemplate producerTemplate, JogadorRepository jogadorRepository, EntityManager entityManager, LIstaJogadoresTituladosRepository lIstaJogadoresTituladosRepository, EstatisticaJogadorRepository estatisticaJogadorRepository) {
+    public JogadorService(ProducerTemplate producerTemplate, JogadorRepository jogadorRepository, EntityManager entityManager, ListaJogadoresTituladosRepository lIstaJogadoresTituladosRepository, EstatisticaJogadorRepository estatisticaJogadorRepository) {
         this.producerTemplate = producerTemplate;
         this.jogadorRepository = jogadorRepository;
         this.entityManager = entityManager;
-        this.lIstaJogadoresTituladosRepository = lIstaJogadoresTituladosRepository;
+        this.listaJogadoresTituladosRepository = lIstaJogadoresTituladosRepository;
         this.estatisticaJogadorRepository = estatisticaJogadorRepository;
     }
 
@@ -207,7 +207,7 @@ public class JogadorService {
 
     @Scheduled(cron = "0 0 3 * * ?", zone = TIME_ZONE)
     private void UtilizarDadosJogadores() throws NotFoundError, IntegrationError {
-        List<ListaJogadoresTitulados> lista = this.lIstaJogadoresTituladosRepository.findAll();
+        List<ListaJogadoresTitulados> lista = this.listaJogadoresTituladosRepository.findAll();
         for (ListaJogadoresTitulados listaJogador : lista) {
             logger.info("Vao ser atualizados {} de titularidade {} da plataforma {}", listaJogador.getJogadores().size(), listaJogador.getTitulo(), listaJogador.getTipo());
             for (String jogador : listaJogador.getJogadores()) {
@@ -217,14 +217,14 @@ public class JogadorService {
     }
 
     private void updateOrCreateListaJogadoresTitulados(TipoPlataforma plataforma, TipoMaestria titulo, PlayersTituladosDto playersTituladosDto) {
-        ListaJogadoresTitulados lista = this.lIstaJogadoresTituladosRepository.findByTituloAndTipo(titulo, plataforma);
+        ListaJogadoresTitulados lista = this.listaJogadoresTituladosRepository.findByTituloAndTipo(titulo, plataforma);
         if(lista == null){
             lista = new ListaJogadoresTitulados(titulo, plataforma, playersTituladosDto);
-            this.lIstaJogadoresTituladosRepository.save(lista);
+            this.listaJogadoresTituladosRepository.save(lista);
         }else{
             lista.setJogadores(new HashSet<>(playersTituladosDto.getPlayers()));
             lista.setDataUltimaAtualizacao(new Date());
-            this.lIstaJogadoresTituladosRepository.save(lista);
+            this.listaJogadoresTituladosRepository.save(lista);
         }
     }
 

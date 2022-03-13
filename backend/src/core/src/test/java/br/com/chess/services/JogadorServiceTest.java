@@ -1,12 +1,11 @@
 package br.com.chess.services;
 
 import br.com.chess.BaseTest;
-import br.com.chess.domain.Jogador;
 import br.com.chess.domain.ListaJogadoresTitulados;
 import br.com.chess.exceptions.IntegrationError;
 import br.com.chess.exceptions.NotFoundError;
 import br.com.chess.repositories.JogadorRepository;
-import br.com.chess.repositories.LIstaJogadoresTituladosRepository;
+import br.com.chess.repositories.ListaJogadoresTituladosRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,7 +25,7 @@ public class JogadorServiceTest extends BaseTest {
     private JogadorRepository jogadorRepository;
 
     @Autowired
-    private LIstaJogadoresTituladosRepository lIstaJogadoresTituladosRepository;
+    private ListaJogadoresTituladosRepository lIstaJogadoresTituladosRepository;
 
     /**
      * Buscando retorno ao buscar jogadores no titulados
