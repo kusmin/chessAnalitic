@@ -11,6 +11,7 @@ public class UtilConstantes {
     public static final String TIPO_STATUS_PLATAFORMA_DESCONHECIDO = "Status plataforma desconhecido.";
     public static final String TIPO_PLATAFORMA_DESCONHECIDO = "Tipo plataforma desconhecido.";
     public static final String TIPO_STATUS_MAESTRIA_DESCONHECIDO = "Tipo de maestria desconhecido.";
+    public static final String ERRO_AO_BUSCAR_JOGADOR_ONLINE = "Não foi possivel verificar se o jogador esta online.";
 
     public static final String ERRO_FECHAR_CAMEL = "Erro ao fechar o camel.";
     public static final String TIME_ZONE = "America/Sao_Paulo";

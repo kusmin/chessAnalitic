@@ -60,7 +60,7 @@ public class JogadorDto {
     }
 
     public JogadorDto(Jogador jogador) {
-        this.avatar = jogador.getAvatarUrl() != null ? jogador.getAvatarUrl():null;
+        this.avatar = jogador.getAvatarUrl() != null ? jogador.getAvatarUrl() : null;
         this.tipo = jogador.getTipo().name();
         this.jogadorId = jogador.getJogadorId();
         this.urlId = jogador.getUrlId() != null ? jogador.getUrlId() : null;

@@ -11,31 +11,31 @@ import java.util.Objects;
 
 @Audited
 @Entity
-@Table(name="puzzle_diario", indexes= {@Index(unique=true, columnList="tipo, data_publicacao" )})
-public class PuzzleDiario extends BaseDomain{
+@Table(name = "puzzle_diario", indexes = {@Index(unique = true, columnList = "tipo, data_publicacao")})
+public class PuzzleDiario extends BaseDomain {
     private static final long serialVersionUID = 1279645996263217777L;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo", nullable = false)
     private TipoPlataforma tipo;
 
-    @Column(name ="titulo", nullable = false)
+    @Column(name = "titulo", nullable = false)
     private String titulo;
 
-    @Column(name ="url", nullable = true)
+    @Column(name = "url", nullable = true)
     private String url;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "data_publicacao", nullable = false)
     private Date dataPublicacao;
 
-    @Column(name ="fen", nullable = true)
+    @Column(name = "fen", nullable = true)
     private String fen;
 
-    @Column(name ="pgn", nullable = true)
+    @Column(name = "pgn", nullable = true)
     private String pgn;
 
-    @Column(name ="image", nullable = true)
+    @Column(name = "image", nullable = true)
     private String image;
 
     public PuzzleDiario() {

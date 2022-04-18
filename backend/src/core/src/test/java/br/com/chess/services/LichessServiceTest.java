@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 @SpringBootTest
 class LichessServiceTest {
 
@@ -13,9 +15,10 @@ class LichessServiceTest {
 
     /**
      * Buscando retorno ao buscar jogadores no lichesss
-    **/
+     **/
     @Test
-    void buscarJogadoresLichess(){
-        String result = (String)this.camelContext.createFluentProducerTemplate().to("direct:jogadores").request();
+    void buscarJogadoresLichess() {
+        String result = (String) this.camelContext.createFluentProducerTemplate().to("direct:jogadores").request();
+        assertNotNull(result);
     }
 }

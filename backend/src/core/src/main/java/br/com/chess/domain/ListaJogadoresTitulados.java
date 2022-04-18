@@ -12,12 +12,12 @@ import java.util.Set;
 
 @Entity
 @Audited
-@Table(name="lista_titulados", indexes= {@Index(unique=true, columnList="tipo, titulo" )})
-public class ListaJogadoresTitulados extends BasePlataforma{
+@Table(name = "lista_titulados", indexes = {@Index(unique = true, columnList = "tipo, titulo")})
+public class ListaJogadoresTitulados extends BasePlataforma {
 
     private static final long serialVersionUID = -6342446922137796866L;
 
-    @ElementCollection(fetch=FetchType.EAGER)
+    @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> jogadores;
 
     public ListaJogadoresTitulados() {

@@ -7,9 +7,9 @@ public enum StatusContaPlataforma {
     PREMIUM("premium"),
     FUNCIONARIO("staff");
 
-    private String value;
+    private final String value;
 
-    private StatusContaPlataforma(String value) {
+    StatusContaPlataforma(String value) {
         this.value = value;
     }
 

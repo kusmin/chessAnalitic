@@ -7,65 +7,62 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
 public class PerfilResponse {
-	
-	private String uuid;
-	
-	private String name;
-	
-	private boolean active;
-	
-	public PerfilResponse() {
-		// construtor padrão
-	}
-	
-	public PerfilResponse(Perfil perfil) {
-		this.uuid = perfil.getUuid();
-		this.name = perfil.getNome();
-		this.active = perfil.isAtivo();
-		this.roles = new ArrayList<>();
-		if (perfil.getPermissoes() != null) {
-			for (Permissao perm : perfil.getPermissoes()) {
-				this.roles.add(new PermissaoResponse(perm));
-			}
-		}
-	}
-	
-	private List<PermissaoResponse> roles;
 
-	public String getUuid() {
-		return uuid;
-	}
+    private String uuid;
 
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
-	}
+    private String name;
 
-	public String getName() {
-		return name;
-	}
+    private boolean active;
+    private List<PermissaoResponse> roles;
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public PerfilResponse() {
+        // construtor padrão
+    }
 
-	public boolean isActive() {
-		return active;
-	}
+    public PerfilResponse(Perfil perfil) {
+        this.uuid = perfil.getUuid();
+        this.name = perfil.getNome();
+        this.active = perfil.isAtivo();
+        this.roles = new ArrayList<>();
+        if (perfil.getPermissoes() != null) {
+            for (Permissao perm : perfil.getPermissoes()) {
+                this.roles.add(new PermissaoResponse(perm));
+            }
+        }
+    }
 
-	public void setActive(boolean active) {
-		this.active = active;
-	}
+    public String getUuid() {
+        return uuid;
+    }
 
-	public List<PermissaoResponse> getRoles() {
-		return roles;
-	}
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
 
-	public void setRoles(List<PermissaoResponse> roles) {
-		this.roles = roles;
-	}
-	
-	
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public List<PermissaoResponse> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<PermissaoResponse> roles) {
+        this.roles = roles;
+    }
+
 
 }

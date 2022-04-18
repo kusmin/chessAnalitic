@@ -12,10 +12,10 @@ public class EstudoDto {
     }
 
     public EstudoDto(Estudo estudo) {
-        if(estudo.getMelhor() != null){
+        if (estudo.getMelhor() != null) {
             this.highest = new BaseEstatisticasDto(estudo.getMelhor().getRating(), estudo.getMelhor().getData());
         }
-        if(estudo.getPior() != null){
+        if (estudo.getPior() != null) {
             this.lowest = new BaseEstatisticasDto(estudo.getPior().getRating(), estudo.getPior().getData());
         }
     }

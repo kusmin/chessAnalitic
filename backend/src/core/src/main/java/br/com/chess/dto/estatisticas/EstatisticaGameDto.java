@@ -2,7 +2,7 @@ package br.com.chess.dto.estatisticas;
 
 import br.com.chess.domain.estaticas.EstatisticaModalidade;
 
-public class EstatisticaGameDto extends BaseEstatisticasDto{
+public class EstatisticaGameDto extends BaseEstatisticasDto {
     private long rd;
 
     private String game;
@@ -12,8 +12,8 @@ public class EstatisticaGameDto extends BaseEstatisticasDto{
     }
 
     public EstatisticaGameDto(EstatisticaModalidade estatisticaModalidade) {
-        super(estatisticaModalidade.getRating(), estatisticaModalidade.getData());
-        if(estatisticaModalidade.getGame() != null){
+        super(estatisticaModalidade != null ? estatisticaModalidade.getRating() : null, estatisticaModalidade != null ? estatisticaModalidade.getData() : null);
+        if (estatisticaModalidade.getGame() != null) {
             this.game = estatisticaModalidade.getGame();
         }
         this.rd = estatisticaModalidade.getRd();

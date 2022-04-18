@@ -7,14 +7,14 @@ import java.io.InputStream;
 
 public interface StorageService {
 
-	Arquivo store(String nomeOriginal, String bucket, Usuario usuario, InputStream conteudo, boolean publico);
+    Arquivo store(String nomeOriginal, String bucket, Usuario usuario, InputStream conteudo, boolean publico);
 
-	Arquivo replace(String nomeOriginal, String bucket, Usuario usuario, InputStream conteudo, Arquivo arquivo);
+    Arquivo replace(String nomeOriginal, String bucket, Usuario usuario, InputStream conteudo, Arquivo arquivo);
 
-	InputStream read(Arquivo arquivo, Usuario usuario);
+    InputStream read(Arquivo arquivo, Usuario usuario);
 
-	void remove(Arquivo arquivo);
+    void remove(Arquivo arquivo);
 
-	String getType();
+    String getType();
 
 }

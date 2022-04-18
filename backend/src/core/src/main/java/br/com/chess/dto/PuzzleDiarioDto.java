@@ -30,44 +30,44 @@ public class PuzzleDiarioDto {
         return title;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
-    public String getDataPublicacao() {
-        return dataPublicacao;
-    }
-
-    public String getFen() {
-        return fen;
-    }
-
-    public String getPgn() {
-        return pgn;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getUrl() {
+        return url;
     }
 
     public void setUrl(String url) {
         this.url = url;
     }
 
+    public String getDataPublicacao() {
+        return dataPublicacao;
+    }
+
     public void setDataPublicacao(String dataPublicacao) {
         this.dataPublicacao = dataPublicacao;
+    }
+
+    public String getFen() {
+        return fen;
     }
 
     public void setFen(String fen) {
         this.fen = fen;
     }
 
+    public String getPgn() {
+        return pgn;
+    }
+
     public void setPgn(String pgn) {
         this.pgn = pgn;
+    }
+
+    public String getImage() {
+        return image;
     }
 
     public void setImage(String image) {

@@ -9,12 +9,12 @@ public class JogadorResponseDto {
     private EstatisticaResponseDto estatisticas;
 
     public JogadorResponseDto() {
-        // Construtor padrao
+        // Construtor padrão
     }
 
     public JogadorResponseDto(Jogador jogador) {
         this.jogador = new JogadorDto(jogador);
-        if(jogador.getEstatisticaJogador() != null){
+        if (jogador.getEstatisticaJogador() != null) {
             this.estatisticas = new EstatisticaResponseDto(jogador.getEstatisticaJogador());
         }
     }

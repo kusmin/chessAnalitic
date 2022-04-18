@@ -2,7 +2,7 @@ package br.com.chess.dto.estatisticas;
 
 import br.com.chess.domain.estaticas.Estudo;
 
-public class EstudoResponseDto extends EstudoDto{
+public class EstudoResponseDto extends EstudoDto {
 
     private String type;
 

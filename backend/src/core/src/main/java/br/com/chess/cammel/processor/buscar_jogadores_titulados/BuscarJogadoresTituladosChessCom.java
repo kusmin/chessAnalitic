@@ -16,12 +16,13 @@ public class BuscarJogadoresTituladosChessCom implements Processor {
     private final RestOperations restTemplate;
 
     @Autowired
-    public BuscarJogadoresTituladosChessCom(@Qualifier("CHESSCOM")RestOperations restTemplate) {
+    public BuscarJogadoresTituladosChessCom(@Qualifier("CHESSCOM") RestOperations restTemplate) {
         this.restTemplate = restTemplate;
     }
+
     @Override
     public void process(Exchange exchange) throws Exception {
-        try{
+        try {
             String title = exchange.getIn().getBody(String.class);
 
             ResponseEntity<PlayersTituladosDto> response = restTemplate.getForEntity(String.format("/titled/%s", title),
@@ -29,7 +30,7 @@ public class BuscarJogadoresTituladosChessCom implements Processor {
 
 
             exchange.getMessage().setBody(response.getBody());
-        }catch(Exception e){
+        } catch (Exception e) {
             throw new IntegrationError("Integration", String.format("Erro ao buscar lista de titulados %s", e));
         }
 

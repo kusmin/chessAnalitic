@@ -5,20 +5,18 @@ import br.com.chess.domain.Jogador;
 import br.com.chess.domain.enums.TipoPlataforma;
 import br.com.chess.dto.Autorizacao;
 import br.com.chess.dto.Erro;
-import br.com.chess.dto.JogadorDto;
 import br.com.chess.dto.JogadorResponseDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 
+import java.time.Duration;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-
-import java.time.Duration;
-
-@SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class BuscaJogadorControllerTest extends BaseTest {
     @BeforeEach
     public void beforeEach() {
@@ -31,7 +29,7 @@ class BuscaJogadorControllerTest extends BaseTest {
      */
 
     @Test
-    void aoBuscarJogadorCasoUsuarioNaoTenhaAutorizacaoRetornar403(){
+    void aoBuscarJogadorCasoUsuarioNaoTenhaAutorizacaoRetornar403() {
 
         // Sem autorização
         this.testClient.get().uri(String.format("/api/v1/player/%s/platform/%s", uuid(), uuid()))
@@ -50,12 +48,12 @@ class BuscaJogadorControllerTest extends BaseTest {
      */
 
     @Test
-    void aoBuscarJogadorComSuceso(){
+    void aoBuscarJogadorComSuceso() {
         Autorizacao auth = criarAdministrador();
 
         // Sem autorização
-        for(String username:JOGADORES){
-            JogadorResponseDto jogadorResponseDto = this.testClient.get().uri(String.format("/api/v1/player/%s/platform/%s",username, TipoPlataforma.CHESS_COM))
+        for (String username : JOGADORES) {
+            JogadorResponseDto jogadorResponseDto = this.testClient.get().uri(String.format("/api/v1/player/%s/platform/%s", username, TipoPlataforma.CHESS_COM))
                     .header("Authorization", auth.getToken())
                     .exchange().expectStatus().isEqualTo(HttpStatus.OK)
                     .expectBody(JogadorResponseDto.class).returnResult().getResponseBody();
@@ -73,8 +71,8 @@ class BuscaJogadorControllerTest extends BaseTest {
             jogadorRepository.save(jogador);
         }
         // Edicao
-        for(String username:JOGADORES){
-            JogadorResponseDto jogadorResponseDto = this.testClient.get().uri(String.format("/api/v1/player/%s/platform/%s",username, TipoPlataforma.CHESS_COM))
+        for (String username : JOGADORES) {
+            JogadorResponseDto jogadorResponseDto = this.testClient.get().uri(String.format("/api/v1/player/%s/platform/%s", username, TipoPlataforma.CHESS_COM))
                     .header("Authorization", auth.getToken())
                     .exchange().expectStatus().isEqualTo(HttpStatus.OK)
                     .expectBody(JogadorResponseDto.class).returnResult().getResponseBody();
@@ -92,12 +90,11 @@ class BuscaJogadorControllerTest extends BaseTest {
      */
 
     @Test
-    void aoBuscarJogadorComSucesoGMS(){
+    void aoBuscarJogadorComSucesoGMS() {
         Autorizacao auth = criarAdministrador();
 
-        // Sem autorização
-        for(String username:JOGADORES_GM){
-            JogadorResponseDto jogadorResponseDto = this.testClient.get().uri(String.format("/api/v1/player/%s/platform/%s",username, TipoPlataforma.CHESS_COM))
+        for (String username : JOGADORES_GM) {
+            JogadorResponseDto jogadorResponseDto = this.testClient.get().uri(String.format("/api/v1/player/%s/platform/%s", username, TipoPlataforma.CHESS_COM))
                     .header("Authorization", auth.getToken())
                     .exchange().expectStatus().isEqualTo(HttpStatus.OK)
                     .expectBody(JogadorResponseDto.class).returnResult().getResponseBody();
@@ -119,11 +116,10 @@ class BuscaJogadorControllerTest extends BaseTest {
      */
 
     @Test
-    void aoBuscarJogadorDesconhecidoRetornar404(){
+    void aoBuscarJogadorDesconhecidoRetornar404() {
         Autorizacao auth = criarAdministrador();
 
-        // Sem autorização
-        Erro erro = this.testClient.get().uri(String.format("/api/v1/player/%s/platform/%s",uuid(), TipoPlataforma.CHESS_COM))
+        Erro erro = this.testClient.get().uri(String.format("/api/v1/player/%s/platform/%s", uuid(), TipoPlataforma.CHESS_COM))
                 .header("Authorization", auth.getToken())
                 .exchange().expectStatus().isEqualTo(HttpStatus.NOT_FOUND)
                 .expectBody(Erro.class).returnResult().getResponseBody();
@@ -131,5 +127,42 @@ class BuscaJogadorControllerTest extends BaseTest {
         assertNotNull(erro);
         assertEquals("NOT_FOUND", erro.getCode());
         assertEquals("Jogador não encontrado.", erro.getMessage());
+    }
+
+    /**
+     * GET - /api/v1/player/{user}/platform/{type}/is-online
+     * Busca Jogador online sem permissão
+     */
+    @Test
+    void aoBuscarJogadorOnlineCasoUsuarioNaoTenhaAutorizacaoRetornar403() {
+
+        // Sem autorização
+        this.testClient.get().uri(String.format("/api/v1/player/%s/platform/%s/is-online", uuid(), uuid()))
+                .header("Authorization", uuid())
+                .exchange().expectStatus().isEqualTo(HttpStatus.FORBIDDEN);
+
+        // sem token
+
+        this.testClient.get().uri(String.format("/api/v1/player/%s/platform/%s/is-online", uuid(), uuid()))
+                .exchange().expectStatus().isEqualTo(HttpStatus.FORBIDDEN);
+    }
+
+    /**
+     * GET - /api/v1/player/{user}/platform/{type}/is-online
+     * Busca Jogador online sem permissão
+     */
+    @Test
+    void aoBuscarJogadorOnlineCasoDeSucesso() {
+        Autorizacao auth = criarAdministrador();
+
+        for (String username : JOGADORES_GM) {
+            Boolean result = this.testClient.get().uri(String.format("/api/v1/player/%s/platform/%s/is-online", username, TipoPlataforma.CHESS_COM))
+                    .header("Authorization", auth.getToken())
+                    .exchange().expectStatus().isEqualTo(HttpStatus.OK)
+                    .expectBody(Boolean.class).returnResult().getResponseBody();
+
+            assertNotNull(result);
+            System.out.println(result);
+        }
     }
 }

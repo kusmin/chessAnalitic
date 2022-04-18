@@ -1,8 +1,8 @@
 package br.com.chess.cammel;
 
-import br.com.chess.cammel.processor.buscarJogadores.BuscarJogadorChessComProcessor;
-import br.com.chess.cammel.processor.buscarJogadores.BuscarJogadoresProcessorLichess;
 import br.com.chess.cammel.processor.ErroProcessor;
+import br.com.chess.cammel.processor.buscar_jogadores.BuscarJogadorChessComProcessor;
+import br.com.chess.cammel.processor.buscar_jogadores.BuscarJogadoresProcessorLichess;
 import br.com.chess.domain.enums.TipoPlataforma;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +32,9 @@ public class BuscarJogadoresRoute extends RouteBuilder {
                 .otherwise()
                 .to("direct:erro");
 
-            from("direct:buscar-jogador-chess-com").id("jogadorChessCom").process(buscarJogadorChessComProcessor);
-            from("direct:buscar-jogador-lichess").id("jogadorLichess").process(buscarJogadoresProcessorLichess);
-            from("direct:erro").id("erro").process(erroProcessor);
+        from("direct:buscar-jogador-chess-com").id("jogadorChessCom").process(buscarJogadorChessComProcessor);
+        from("direct:buscar-jogador-lichess").id("jogadorLichess").process(buscarJogadoresProcessorLichess);
+        from("direct:erro").id("erro").process(erroProcessor);
 
     }
 }

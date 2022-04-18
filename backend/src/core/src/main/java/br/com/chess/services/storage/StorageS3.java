@@ -1,15 +1,5 @@
 package br.com.chess.services.storage;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
-
 import br.com.chess.UtilMetodo;
 import br.com.chess.domain.Arquivo;
 import br.com.chess.domain.ArquivoDownload;
@@ -25,274 +15,273 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.health.Health;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.stereotype.Component;
-
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.*;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+
+import java.io.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 @Component
 public class StorageS3 implements StorageService, HealthIndicator {
 
-	private final ArquivoRepository arquivoRepository;
+    private static final Logger logger = LoggerFactory.getLogger("StorageS3");
+    private static final String USUARIO_INDEFINIDO = "Usuário indefinido";
+    private static final String SETA = " --> ";
+    private final ArquivoRepository arquivoRepository;
+    private final ArquivoDownloadRepository arquivoDownloadRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final S3Client s3Client;
+    @Value("${s3.bucket.name}")
+    private String bucket;
+    @Value("${s3.privatebucket.name}")
+    private String bucketPrivado;
+    @Value("${s3.endpoint:#{null}}")
+    private String endpointS3;
+    @Value("${s3.endpoint.local}")
+    private String endpointLocal;
 
-	private final ArquivoDownloadRepository arquivoDownloadRepository;
+    @Autowired
+    public StorageS3(ArquivoRepository arquivoRepository, ArquivoDownloadRepository arquivoDownloadRepository,
+                     S3Client s3Client, UsuarioRepository usuarioRepository) {
+        this.arquivoRepository = arquivoRepository;
+        this.arquivoDownloadRepository = arquivoDownloadRepository;
+        this.s3Client = s3Client;
+        this.usuarioRepository = usuarioRepository;
+    }
 
-	private final UsuarioRepository usuarioRepository;
+    private static String getContentType(String[] componentes) {
+        String extensao = componentes[componentes.length - 1];
+        if (extensao != null) {
+            extensao = extensao.trim().toLowerCase();
+        }
+        String contentType;
+        if ("png".equals(extensao)) {
+            contentType = "image/png";
+        } else if ("jpeg".equals(extensao) || "jpg".equals(extensao)) {
+            contentType = "image/jpeg";
+        } else if ("gif".equals(extensao)) {
+            contentType = "image/gif";
+        } else {
+            contentType = "application/octet-stream";
+        }
+        return contentType;
+    }
 
-	private final S3Client s3Client;
+    private File createTempFile(InputStream input) throws IOException {
+        File arquivo = new File(System.getProperty("java.io.tmpdir") + "/tempUpload_" + UUID.randomUUID());
+        try (FileOutputStream fos = new FileOutputStream(arquivo)) {
+            int c = -1;
+            byte[] buffer = new byte[65536];
+            while ((c = input.read(buffer)) != -1) {
+                fos.write(buffer, 0, c);
+            }
+        }
+        return arquivo;
+    }
 
-	private static final Logger logger = LoggerFactory.getLogger("StorageS3");
+    @Override
+    public Arquivo store(String nomeOriginal, String bucket, Usuario usuario, InputStream conteudo, boolean publico) {
+        validarInformacoes(nomeOriginal, usuario, conteudo);
 
-	@Value("${s3.bucket.name}")
-	private String bucket;
+        Arquivo arquivo = new Arquivo();
+        arquivo.setBucket(bucket);
+        arquivo.setUuid(UUID.randomUUID().toString());
 
-	@Value("${s3.privatebucket.name}")
-	private String bucketPrivado;
+        arquivo.setOriginalName(nomeOriginal);
+        String[] componentes = nomeOriginal.split("\\.");
+        String contentType = getContentType(componentes);
+        arquivo.setUuid(arquivo.getUuid() + "." + componentes[componentes.length - 1]);
+        arquivo.setUsuario(usuario);
+        arquivo.setExcluido(false);
+        arquivo.setCreatedAt(new Date());
+        arquivo.setContentType(contentType);
 
-	@Value("${s3.endpoint:#{null}}")
-	private String endpointS3;
+        File arquivoTemp = null;
+        try {
+            arquivoTemp = this.createTempFile(conteudo);
+            this.s3Client.putObject(PutObjectRequest.builder()
+                            .bucket(bucket)
+                            .contentLength(arquivoTemp.length())
+                            .key(arquivo.getUuid())
+                            .acl(publico ? ObjectCannedACL.PUBLIC_READ : ObjectCannedACL.PRIVATE)
+                            .contentType(contentType)
+                            .build(),
+                    RequestBody.fromFile(arquivoTemp));
 
-	@Value("${s3.endpoint.local}")
-	private String endpointLocal;
+            if (this.endpointS3.contains("0.0.0.0") || this.endpointS3.contains("localhost")) {
+                arquivo.setUrl(endpointLocal + "/ui/" + bucket + "/" + arquivo.getUuid());
+            } else {
+                arquivo.setUrl(this.s3Client.utilities().getUrl(it -> it.bucket(bucket).key(arquivo.getUuid()))
+                        .toExternalForm());
+            }
+        } catch (IOException ex) {
+            throw new StorageError("Erro no sistema de arquivos", ex);
+        } finally {
+            if (arquivoTemp != null && arquivoTemp.exists()) {
+                UtilMetodo.cleanUp(arquivoTemp.toPath());
+            }
+        }
+        return this.arquivoRepository.save(arquivo);
+    }
 
-	private static final String USUARIO_INDEFINIDO = "Usuário indefinido";
-	private static final String SETA = " --> ";
+    private void validarInformacoes(String nomeOriginal, Usuario usuario, InputStream conteudo) {
+        if (nomeOriginal == null) {
+            throw new StorageError("Nome original indefinido");
+        }
 
-	@Autowired
-	public StorageS3(ArquivoRepository arquivoRepository, ArquivoDownloadRepository arquivoDownloadRepository,
-					 S3Client s3Client, UsuarioRepository usuarioRepository) {
-		this.arquivoRepository = arquivoRepository;
-		this.arquivoDownloadRepository = arquivoDownloadRepository;
-		this.s3Client = s3Client;
-		this.usuarioRepository = usuarioRepository;
-	}
+        if (usuario == null) {
+            throw new StorageError(USUARIO_INDEFINIDO);
+        }
 
-	private File createTempFile(InputStream input) throws IOException {
-		File arquivo = new File(System.getProperty("java.io.tmpdir") + "/tempUpload_" + UUID.randomUUID().toString());
-		try (FileOutputStream fos = new FileOutputStream(arquivo)) {
-			int c = -1;
-			byte[] buffer = new byte[65536];
-			while ((c = input.read(buffer)) != -1) {
-				fos.write(buffer, 0, c);
-			}
-		}
-		return arquivo;
-	}
+        if (conteudo == null) {
+            throw new StorageError("Conteúdo indefinido");
+        }
+    }
 
-	@Override
-	public Arquivo store(String nomeOriginal, String bucket, Usuario usuario, InputStream conteudo, boolean publico) {
-		validarInformacoes(nomeOriginal, usuario, conteudo);
+    @Override
+    public InputStream read(Arquivo arquivo, Usuario usuario) {
+        if (arquivo == null) {
+            throw new StorageError("Arquivo indefinido");
+        }
+        if (usuario == null) {
+            throw new StorageError(USUARIO_INDEFINIDO);
+        }
 
-		Arquivo arquivo = new Arquivo();
-		arquivo.setBucket(bucket);
-		arquivo.setUuid(UUID.randomUUID().toString());
+        ArquivoDownload download = new ArquivoDownload();
 
-		arquivo.setOriginalName(nomeOriginal);
-		String[] componentes = nomeOriginal.split("\\.");
-		String contentType = getContentType(componentes);
-		arquivo.setUuid(arquivo.getUuid() + "." + componentes[componentes.length - 1]);
-		arquivo.setUsuario(usuario);
-		arquivo.setExcluido(false);
-		arquivo.setCreatedAt(new Date());
-		arquivo.setContentType(contentType);
+        download.setArquivo(arquivo);
+        download.setUsuario(usuario);
+        arquivoDownloadRepository.save(download);
 
-		File arquivoTemp = null;
-		try {
-			arquivoTemp = this.createTempFile(conteudo);
-			this.s3Client.putObject(PutObjectRequest.builder()
-							.bucket(bucket)
-							.contentLength(arquivoTemp.length())
-							.key(arquivo.getUuid())
-							.acl(publico ? ObjectCannedACL.PUBLIC_READ : ObjectCannedACL.PRIVATE)
-							.contentType(contentType)
-							.build(),
-					RequestBody.fromFile(arquivoTemp));
+        return this.s3Client.getObject(GetObjectRequest.builder()
+                .bucket(arquivo.getBucket())
+                .key(arquivo.getUuid())
+                .build());
+    }
 
-			if (this.endpointS3.contains("0.0.0.0") || this.endpointS3.contains("localhost")) {
-				arquivo.setUrl(endpointLocal + "/ui/" + bucket + "/" + arquivo.getUuid());
-			} else {
-				arquivo.setUrl(this.s3Client.utilities().getUrl(it -> it.bucket(bucket).key(arquivo.getUuid()))
-						.toExternalForm());
-			}
-		} catch (IOException ex) {
-			throw new StorageError("Erro no sistema de arquivos", ex);
-		} finally {
-			if (arquivoTemp != null && arquivoTemp.exists()) {
-				UtilMetodo.cleanUp(arquivoTemp.toPath());
-			}
-		}
-		return this.arquivoRepository.save(arquivo);
-	}
+    @Override
+    public void remove(Arquivo arquivo) {
+        DeleteObjectRequest request = DeleteObjectRequest.builder().bucket(arquivo.getBucket()).key(arquivo.getUuid())
+                .build();
+        this.s3Client.deleteObject(request);
+        arquivo.setExcluido(true);
+        List<ArquivoDownload> downloads = this.arquivoDownloadRepository.findAllByArquivo(arquivo);
+        if (downloads != null) {
+            for (ArquivoDownload download : downloads) {
+                this.arquivoDownloadRepository.delete(download);
+            }
+        }
+        arquivoRepository.delete(arquivo);
+    }
 
-	private void validarInformacoes(String nomeOriginal, Usuario usuario, InputStream conteudo) {
-		if (nomeOriginal == null) {
-			throw new StorageError("Nome original indefinido");
-		}
+    @Override
+    public String getType() {
+        return "AWS S3";
+    }
 
-		if (usuario == null) {
-			throw new StorageError(USUARIO_INDEFINIDO);
-		}
+    @Override
+    public Health health() {
+        logger.info("Começando o teste do s3");
 
-		if (conteudo == null) {
-			throw new StorageError("Conteúdo indefinido");
-		}
-	}
+        String[] buckets = {this.bucket, this.bucketPrivado};
 
-	private static String getContentType(String[] componentes) {
-		String extensao = componentes[componentes.length - 1];
-		if (extensao != null) {
-			extensao = extensao.trim().toLowerCase();
-		}
-		String contentType;
-		if ("png".equals(extensao)) {
-			contentType = "image/png";
-		} else if ("jpeg".equals(extensao) || "jpg".equals(extensao)) {
-			contentType = "image/jpeg";
-		} else if ("gif".equals(extensao)) {
-			contentType = "image/gif";
-		} else {
-			contentType = "application/octet-stream";
-		}
-		return contentType;
-	}
+        for (String bucketCorrente : buckets) {
 
-	@Override
-	public InputStream read(Arquivo arquivo, Usuario usuario) {
-		if (arquivo == null) {
-			throw new StorageError("Arquivo indefinido");
-		}
-		if (usuario == null) {
-			throw new StorageError(USUARIO_INDEFINIDO);
-		}
+            String nomeArquivoTeste = "ArquivoTeste-" + UUID.randomUUID() + ".txt";
 
-		ArquivoDownload download = new ArquivoDownload();
+            File arquivoTeste = new File(
+                    System.getProperty("java.io.tmpdir") + "/tempFile-" + UUID.randomUUID());
 
-		download.setArquivo(arquivo);
-		download.setUsuario(usuario);
-		arquivoDownloadRepository.save(download);
+            StringBuilder builder = new StringBuilder();
 
-		return this.s3Client.getObject(GetObjectRequest.builder()
-				.bucket(arquivo.getBucket())
-				.key(arquivo.getUuid())
-				.build());
-	}
+            int tamanho = 1 + (Objects.requireNonNull(UtilMetodo.rand()).nextInt() * 100);
+            for (int i = 0; i < tamanho; i++) {
+                builder.append(UUID.randomUUID());
+            }
 
-	@Override
-	public void remove(Arquivo arquivo) {
-		DeleteObjectRequest request = DeleteObjectRequest.builder().bucket(arquivo.getBucket()).key(arquivo.getUuid())
-				.build();
-		this.s3Client.deleteObject(request);
-		arquivo.setExcluido(true);
-		List<ArquivoDownload> downloads = this.arquivoDownloadRepository.findAllByArquivo(arquivo);
-		if (downloads != null) {
-			for (ArquivoDownload download : downloads) {
-				this.arquivoDownloadRepository.delete(download);
-			}
-		}
-		arquivoRepository.delete(arquivo);
-	}
+            try (FileOutputStream fos = new FileOutputStream(arquivoTeste)) {
+                fos.write(builder.toString().getBytes());
+            } catch (IOException ex) {
+                return Health.down().withDetail("s3.error.test", bucketCorrente + SETA + ex.getMessage()).build();
+            }
 
-	@Override
-	public String getType() {
-		return "AWS S3";
-	}
+            Arquivo registro = null;
+            Usuario usuario = usuarioRepository.findByEmail("admin@itexto.com.br");
 
-	@Override
-	public Health health() {
-		logger.info("Começando o teste do s3");
+            try (FileInputStream inputStream = new FileInputStream(arquivoTeste)) {
+                registro = this.store(nomeArquivoTeste, bucketCorrente, usuario, inputStream, false);
+            } catch (IOException ex) {
+                return Health.down().withDetail("s3.error.write.io", bucketCorrente + SETA + ex.getMessage()).build();
+            }
 
-		String[] buckets = { this.bucket, this.bucketPrivado };
+            try (InputStream leituraArquivo = this.read(registro, usuario)) {
+                byte[] buffer = new byte[16384];
+                StringBuilder builderReader = new StringBuilder();
+                int c = -1;
+                while ((c = leituraArquivo.read(buffer)) != -1) {
+                    builderReader.append(new String(buffer, 0, c));
+                }
 
-		for (String bucketCorrente : buckets) {
+                if (!builder.toString().equals(builderReader.toString())) {
+                    return Health.down().withDetail("s3.error.inconsistent",
+                            bucketCorrente + SETA + "O valor escrito é diferente do lido no bucket").build();
+                }
 
-			String nomeArquivoTeste = "ArquivoTeste-" + UUID.randomUUID() + ".txt";
+            } catch (IOException error) {
+                return Health.down().withDetail("s3.error.read", error.getMessage()).build();
+            }
+        }
+        return Health.up().build();
+    }
 
-			File arquivoTeste = new File(
-					System.getProperty("java.io.tmpdir") + "/tempFile-" + UUID.randomUUID().toString());
+    @Override
+    public Arquivo replace(String nomeOriginal, String bucket, Usuario usuario, InputStream conteudo, Arquivo arquivo) {
+        validarInformacoes(nomeOriginal, usuario, conteudo);
 
-			StringBuilder builder = new StringBuilder();
+        DeleteObjectRequest request = DeleteObjectRequest.builder().bucket(arquivo.getBucket()).key(arquivo.getUuid())
+                .build();
+        this.s3Client.deleteObject(request);
 
-			int tamanho = 1 + (Objects.requireNonNull(UtilMetodo.rand()).nextInt() * 100);
-			for (int i = 0; i < tamanho; i++) {
-				builder.append(UUID.randomUUID());
-			}
+        arquivo.setBucket(bucket);
+        arquivo.setUuid(UUID.randomUUID().toString());
 
-			try (FileOutputStream fos = new FileOutputStream(arquivoTeste)) {
-				fos.write(builder.toString().getBytes());
-			} catch (IOException ex) {
-				return Health.down().withDetail("s3.error.test", bucketCorrente + SETA + ex.getMessage()).build();
-			}
+        arquivo.setOriginalName(nomeOriginal);
+        String[] componentes = nomeOriginal.split("\\.");
+        arquivo.setUuid(arquivo.getUuid() + "." + componentes[componentes.length - 1]);
+        arquivo.setUsuario(usuario);
+        arquivo.setExcluido(false);
+        arquivo.setCreatedAt(new Date());
 
-			Arquivo registro = null;
-			Usuario usuario = usuarioRepository.findByEmail("admin@itexto.com.br");
+        File arquivoTemp = null;
+        try {
+            arquivoTemp = this.createTempFile(conteudo);
+            this.s3Client.putObject(PutObjectRequest.builder()
+                            .bucket(bucket)
+                            .contentLength(arquivoTemp.length())
+                            .key(arquivo.getUuid())
+                            .acl(ObjectCannedACL.PUBLIC_READ)
+                            .build(),
+                    RequestBody.fromFile(arquivoTemp));
 
-			try (FileInputStream inputStream = new FileInputStream(arquivoTeste)) {
-				registro = this.store(nomeArquivoTeste, bucketCorrente, usuario, inputStream, false);
-			} catch (IOException ex) {
-				return Health.down().withDetail("s3.error.write.io", bucketCorrente + SETA + ex.getMessage()).build();
-			}
-
-			try (InputStream leituraArquivo = this.read(registro, usuario)) {
-				byte[] buffer = new byte[16384];
-				StringBuilder builderReader = new StringBuilder();
-				int c = -1;
-				while ((c = leituraArquivo.read(buffer)) != -1) {
-					builderReader.append(new String(buffer, 0, c));
-				}
-
-				if (!builder.toString().equals(builderReader.toString())) {
-					return Health.down().withDetail("s3.error.inconsistent",
-							bucketCorrente + SETA + "O valor escrito é diferente do lido no bucket").build();
-				}
-
-			} catch (IOException error) {
-				return Health.down().withDetail("s3.error.read", error.getMessage()).build();
-			}
-		}
-		return Health.up().build();
-	}
-
-	@Override
-	public Arquivo replace(String nomeOriginal, String bucket, Usuario usuario, InputStream conteudo, Arquivo arquivo) {
-		validarInformacoes(nomeOriginal, usuario, conteudo);
-
-		DeleteObjectRequest request = DeleteObjectRequest.builder().bucket(arquivo.getBucket()).key(arquivo.getUuid())
-				.build();
-		this.s3Client.deleteObject(request);
-
-		arquivo.setBucket(bucket);
-		arquivo.setUuid(UUID.randomUUID().toString());
-
-		arquivo.setOriginalName(nomeOriginal);
-		String[] componentes = nomeOriginal.split("\\.");
-		arquivo.setUuid(arquivo.getUuid() + "." + componentes[componentes.length - 1]);
-		arquivo.setUsuario(usuario);
-		arquivo.setExcluido(false);
-		arquivo.setCreatedAt(new Date());
-
-		File arquivoTemp = null;
-		try {
-			arquivoTemp = this.createTempFile(conteudo);
-			this.s3Client.putObject(PutObjectRequest.builder()
-							.bucket(bucket)
-							.contentLength(arquivoTemp.length())
-							.key(arquivo.getUuid())
-							.acl(ObjectCannedACL.PUBLIC_READ)
-							.build(),
-					RequestBody.fromFile(arquivoTemp));
-
-			if (this.endpointS3.contains("0.0.0.0")) {
-				arquivo.setUrl(endpointLocal + "/ui/" + bucket + "/" + arquivo.getUuid());
-			} else {
-				arquivo.setUrl(this.s3Client.utilities().getUrl(it -> it.bucket(bucket).key(arquivo.getUuid())).toExternalForm());
-			}
-		} catch (IOException ex) {
-			throw new StorageError("Erro no sistema de arquivos", ex);
-		} finally {
-			if (arquivoTemp != null && arquivoTemp.exists()) {
-				UtilMetodo.cleanUp(arquivoTemp.toPath());
-			}
-		}
-		return this.arquivoRepository.save(arquivo);
-	}
+            if (this.endpointS3.contains("0.0.0.0")) {
+                arquivo.setUrl(endpointLocal + "/ui/" + bucket + "/" + arquivo.getUuid());
+            } else {
+                arquivo.setUrl(this.s3Client.utilities().getUrl(it -> it.bucket(bucket).key(arquivo.getUuid())).toExternalForm());
+            }
+        } catch (IOException ex) {
+            throw new StorageError("Erro no sistema de arquivos", ex);
+        } finally {
+            if (arquivoTemp != null && arquivoTemp.exists()) {
+                UtilMetodo.cleanUp(arquivoTemp.toPath());
+            }
+        }
+        return this.arquivoRepository.save(arquivo);
+    }
 }

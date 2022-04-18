@@ -1,6 +1,5 @@
 package br.com.chess.dto.estatisticas;
 
-import br.com.chess.domain.Jogador;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class EstatisticasDto {

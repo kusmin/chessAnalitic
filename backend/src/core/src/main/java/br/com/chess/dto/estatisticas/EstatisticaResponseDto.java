@@ -13,15 +13,19 @@ public class EstatisticaResponseDto {
 
     public EstatisticaResponseDto(EstatisticaJogador estatisticaJogador) {
         this.ratingFide = estatisticaJogador.getFide();
-        if(estatisticaJogador.getModalidades() != null && !estatisticaJogador.getModalidades().isEmpty()){
-           this.modalidades = estatisticaJogador.getModalidades().stream().map(ModalidadeResponseDto::new).collect(Collectors.toList());
+        if (estatisticaJogador.getModalidades() != null && !estatisticaJogador.getModalidades().isEmpty()) {
+            this.modalidades = estatisticaJogador.getModalidades().stream().map(ModalidadeResponseDto::new).collect(Collectors.toList());
         }
-        if(estatisticaJogador.getQuebraCabecas() != null){
+        if (estatisticaJogador.getQuebraCabecas() != null) {
             this.puzzle = new PuzzleRushDto(estatisticaJogador.getQuebraCabecas());
         }
-        if(estatisticaJogador.getEstudos() != null && !estatisticaJogador.getEstudos().isEmpty()){
+        if (estatisticaJogador.getEstudos() != null && !estatisticaJogador.getEstudos().isEmpty()) {
             this.estudos = estatisticaJogador.getEstudos().stream().map(EstudoResponseDto::new).collect(Collectors.toList());
         }
+    }
+
+    public EstatisticaResponseDto() {
+        // Construtor padrão
     }
 
     public List<ModalidadeResponseDto> getModalidades() {

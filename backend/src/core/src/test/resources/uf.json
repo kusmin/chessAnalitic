@@ -1,0 +1,220 @@
+{
+  "list": [
+    {
+      "id": 11,
+      "created_at": "2021-12-15T20:04:15.947Z",
+      "uuid": "RO",
+      "codigo": 11,
+      "nome_extenso": "Rondônia",
+      "uf": "RO"
+    },
+    {
+      "id": 12,
+      "created_at": "2021-12-15T20:04:15.951Z",
+      "uuid": "AC",
+      "codigo": 12,
+      "nome_extenso": "Acre",
+      "uf": "AC"
+    },
+    {
+      "id": 13,
+      "created_at": "2021-12-15T20:04:15.952Z",
+      "uuid": "AM",
+      "codigo": 13,
+      "nome_extenso": "Amazonas",
+      "uf": "AM"
+    },
+    {
+      "id": 14,
+      "created_at": "2021-12-15T20:04:15.954Z",
+      "uuid": "RR",
+      "codigo": 14,
+      "nome_extenso": "Roraima",
+      "uf": "RR"
+    },
+    {
+      "id": 15,
+      "created_at": "2021-12-15T20:04:15.955Z",
+      "uuid": "PA",
+      "codigo": 15,
+      "nome_extenso": "Pará",
+      "uf": "PA"
+    },
+    {
+      "id": 16,
+      "created_at": "2021-12-15T20:04:15.957Z",
+      "uuid": "AP",
+      "codigo": 16,
+      "nome_extenso": "Amapá",
+      "uf": "AP"
+    },
+    {
+      "id": 17,
+      "created_at": "2021-12-15T20:04:15.958Z",
+      "uuid": "TO",
+      "codigo": 17,
+      "nome_extenso": "Tocantins",
+      "uf": "TO"
+    },
+    {
+      "id": 21,
+      "created_at": "2021-12-15T20:04:15.960Z",
+      "uuid": "MA",
+      "codigo": 21,
+      "nome_extenso": "Maranhão",
+      "uf": "MA"
+    },
+    {
+      "id": 22,
+      "created_at": "2021-12-15T20:04:15.961Z",
+      "uuid": "PI",
+      "codigo": 22,
+      "nome_extenso": "Piauí",
+      "uf": "PI"
+    },
+    {
+      "id": 23,
+      "created_at": "2021-12-15T20:04:15.963Z",
+      "uuid": "CE",
+      "codigo": 23,
+      "nome_extenso": "Ceará",
+      "uf": "CE"
+    },
+    {
+      "id": 24,
+      "created_at": "2021-12-15T20:04:15.964Z",
+      "uuid": "RN",
+      "codigo": 24,
+      "nome_extenso": "Rio Grande do Norte",
+      "uf": "RN"
+    },
+    {
+      "id": 25,
+      "created_at": "2021-12-15T20:04:15.966Z",
+      "uuid": "PB",
+      "codigo": 25,
+      "nome_extenso": "Paraíba",
+      "uf": "PB"
+    },
+    {
+      "id": 26,
+      "created_at": "2021-12-15T20:04:15.969Z",
+      "uuid": "PE",
+      "codigo": 26,
+      "nome_extenso": "Pernambuco",
+      "uf": "PE"
+    },
+    {
+      "id": 27,
+      "created_at": "2021-12-15T20:04:15.971Z",
+      "uuid": "AL",
+      "codigo": 27,
+      "nome_extenso": "Alagoas",
+      "uf": "AL"
+    },
+    {
+      "id": 28,
+      "created_at": "2021-12-15T20:04:15.973Z",
+      "uuid": "SE",
+      "codigo": 28,
+      "nome_extenso": "Sergipe",
+      "uf": "SE"
+    },
+    {
+      "id": 29,
+      "created_at": "2021-12-15T20:04:15.975Z",
+      "uuid": "BA",
+      "codigo": 29,
+      "nome_extenso": "Bahia",
+      "uf": "BA"
+    },
+    {
+      "id": 31,
+      "created_at": "2021-12-15T20:04:15.976Z",
+      "uuid": "MG",
+      "codigo": 31,
+      "nome_extenso": "Minas Gerais",
+      "uf": "MG"
+    },
+    {
+      "id": 32,
+      "created_at": "2021-12-15T20:04:15.978Z",
+      "uuid": "ES",
+      "codigo": 32,
+      "nome_extenso": "Espírito Santo",
+      "uf": "ES"
+    },
+    {
+      "id": 33,
+      "created_at": "2021-12-15T20:04:15.979Z",
+      "uuid": "RJ",
+      "codigo": 33,
+      "nome_extenso": "Rio de Janeiro",
+      "uf": "RJ"
+    },
+    {
+      "id": 35,
+      "created_at": "2021-12-15T20:04:15.981Z",
+      "uuid": "SP",
+      "codigo": 35,
+      "nome_extenso": "São Paulo",
+      "uf": "SP"
+    },
+    {
+      "id": 41,
+      "created_at": "2021-12-15T20:04:15.982Z",
+      "uuid": "PR",
+      "codigo": 41,
+      "nome_extenso": "Paraná",
+      "uf": "PR"
+    },
+    {
+      "id": 42,
+      "created_at": "2021-12-15T20:04:15.984Z",
+      "uuid": "SC",
+      "codigo": 42,
+      "nome_extenso": "Santa Catarina",
+      "uf": "SC"
+    },
+    {
+      "id": 43,
+      "created_at": "2021-12-15T20:04:15.985Z",
+      "uuid": "RS",
+      "codigo": 43,
+      "nome_extenso": "Rio Grande do Sul",
+      "uf": "RS"
+    },
+    {
+      "id": 50,
+      "created_at": "2021-12-15T20:04:15.987Z",
+      "uuid": "MS",
+      "codigo": 50,
+      "nome_extenso": "Mato Grosso do Sul",
+      "uf": "MS"
+    },
+    {
+      "id": 51,
+      "created_at": "2021-12-15T20:04:15.988Z",
+      "uuid": "MT",
+      "codigo": 51,
+      "nome_extenso": "Mato Grosso",
+      "uf": "MT"
+    },
+    {
+      "id": 52,
+      "created_at": "2021-12-15T20:04:15.990Z",
+      "uuid": "GO",
+      "codigo": 52,
+      "nome_extenso": "Goiás",
+      "uf": "GO"
+    },
+    {
+      "id": 53,
+      "created_at": "2021-12-15T20:04:15.991Z",
+      "uuid": "DF",
+      "codigo": 53,
+      "nome_extenso": "Distrito Federal",
+      "uf": "DF"
+    }
+  ]
+}

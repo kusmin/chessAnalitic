@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.Objects;
 
 @MappedSuperclass
-public abstract class BasePlataforma extends BaseDomain{
+public abstract class BasePlataforma extends BaseDomain {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo", nullable = false)

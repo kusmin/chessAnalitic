@@ -1,7 +1,7 @@
 package br.com.chess.cammel;
 
 import br.com.chess.cammel.processor.ErroProcessor;
-import br.com.chess.cammel.processor.buscarEstatisticaJogador.BuscarEstatisticasJogadorChessComProcessor;
+import br.com.chess.cammel.processor.buscar_estatistica_jogador.BuscarEstatisticasJogadorChessComProcessor;
 import br.com.chess.domain.enums.TipoPlataforma;
 import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
@@ -16,7 +16,6 @@ public class BuscaJogadorEstaticasRoute extends RouteBuilder {
         this.erroProcessor = erroProcessor;
         this.buscarEstatisticasJogadorChessComProcessor = buscarEstatisticasJogadorChessComProcessor;
     }
-
 
 
     @Override

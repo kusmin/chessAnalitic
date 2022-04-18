@@ -1,12 +1,11 @@
 package br.com.chess.dto.estatisticas;
 
 import br.com.chess.UtilData;
-import br.com.chess.domain.estaticas.EstatisticaModalidade;
 
 import java.util.Date;
 
 public class BaseEstatisticasDto {
-    private long rating;
+    private Long rating;
 
     private long date;
 
@@ -16,7 +15,7 @@ public class BaseEstatisticasDto {
         // Construtor padrao
     }
 
-    public BaseEstatisticasDto(long rating, Date data) {
+    public BaseEstatisticasDto(Long rating, Date data) {
         this.rating = rating;
         this.dataFormatada = UtilData.formatoDataCompleta().format(data);
     }
@@ -30,11 +29,11 @@ public class BaseEstatisticasDto {
         this.dataFormatada = dataFormatada;
     }
 
-    public long getRating() {
+    public Long getRating() {
         return rating;
     }
 
-    public void setRating(long rating) {
+    public void setRating(Long rating) {
         this.rating = rating;
     }
 

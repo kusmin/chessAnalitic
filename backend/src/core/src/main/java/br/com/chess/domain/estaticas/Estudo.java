@@ -10,7 +10,7 @@ import java.util.Objects;
 
 @Entity
 @Audited
-@Table(name="tatica")
+@Table(name = "tatica")
 public class Estudo extends BaseDomain {
 
     private static final long serialVersionUID = -1264718260425764676L;
@@ -19,11 +19,11 @@ public class Estudo extends BaseDomain {
     @Column(name = "tipo", nullable = false)
     private TipoEstudo tipo;
 
-    @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL, fetch= FetchType.EAGER)
+    @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "melhor_id")
     private EstatisticaModalidade melhor;
 
-    @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL, fetch= FetchType.EAGER)
+    @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "pior_id")
     private EstatisticaModalidade pior;
 
@@ -35,12 +35,16 @@ public class Estudo extends BaseDomain {
         super();
         this.tipo = tipoEstudo;
         this.estatisticaJogador = estatisticaJogador;
-        if(estudoDto.getHighest() != null){
+        if (estudoDto.getHighest() != null) {
             this.melhor = new EstatisticaModalidade(estudoDto.getHighest());
         }
-        if(estudoDto.getLowest() != null){
+        if (estudoDto.getLowest() != null) {
             this.pior = new EstatisticaModalidade(estudoDto.getLowest());
         }
+    }
+
+    public Estudo() {
+        // Construtor Padrao
     }
 
     public EstatisticaJogador getEstatisticaJogador() {
@@ -51,12 +55,12 @@ public class Estudo extends BaseDomain {
         this.estatisticaJogador = estatisticaJogador;
     }
 
-    public Estudo() {
-        // Construtor Padrao
-    }
-
     public EstatisticaModalidade getPior() {
         return pior;
+    }
+
+    public void setPior(EstatisticaModalidade pior) {
+        this.pior = pior;
     }
 
     public EstatisticaModalidade getMelhor() {
@@ -65,10 +69,6 @@ public class Estudo extends BaseDomain {
 
     public void setMelhor(EstatisticaModalidade melhor) {
         this.melhor = melhor;
-    }
-
-    public void setPior(EstatisticaModalidade pior) {
-        this.pior = pior;
     }
 
     public TipoEstudo getTipo() {

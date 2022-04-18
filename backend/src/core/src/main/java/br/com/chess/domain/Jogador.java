@@ -10,22 +10,24 @@ import br.com.chess.dto.estatisticas.EstatisticasDto;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.io.Serial;
 import java.util.Date;
 import java.util.Objects;
 
 @Entity
 @Audited
-@Table(name="jogador", indexes= {@Index(unique=true, columnList="tipo, username")})
-public class Jogador extends BasePlataforma{
+@Table(name = "jogador", indexes = {@Index(unique = true, columnList = "tipo, username")})
+public class Jogador extends BasePlataforma {
+    @Serial
     private static final long serialVersionUID = -3883063181789221462L;
 
-    @Column(name = "avatar", nullable = true )
+    @Column(name = "avatar", nullable = true)
     private String avatarUrl;
 
     @Column(name = "jogador_id", nullable = false)
     private long jogadorId;
 
-    @Column(name ="url_id", nullable = true)
+    @Column(name = "url_id", nullable = true)
     private String urlId;
 
     @Column(name = "url", nullable = true)
@@ -37,7 +39,7 @@ public class Jogador extends BasePlataforma{
     @Column(name = "username", nullable = false, length = 64)
     private String username;
 
-    @Column(name ="seguidores", nullable = false)
+    @Column(name = "seguidores", nullable = false)
     private long seguidores = 0;
 
     @Column(name = "localidade", nullable = true)
@@ -58,7 +60,7 @@ public class Jogador extends BasePlataforma{
     @Column(name = "status", nullable = false)
     private StatusContaPlataforma statusConta;
 
-    @Column(name = "fide", nullable = true )
+    @Column(name = "fide", nullable = true)
     private int fide = 0;
 
     @Column(name = "streamer")
@@ -111,7 +113,7 @@ public class Jogador extends BasePlataforma{
         this.fide = jogadorDto.getFide();
         this.streamer = jogadorDto.isStreamer();
         this.twitchUrl = jogadorDto.getTwitchUrl() != null ? jogadorDto.getTwitchUrl() : null;
-        this.estatisticaJogador = new EstatisticaJogador(this,estatisticas);
+        this.estatisticaJogador = new EstatisticaJogador(this, estatisticas);
     }
 
     public String getAvatarUrl() {

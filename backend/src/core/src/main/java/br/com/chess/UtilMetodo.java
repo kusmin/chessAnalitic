@@ -14,7 +14,8 @@ import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Random;
 
-import static br.com.chess.UtilConstantes.*;
+import static br.com.chess.UtilConstantes.TIPO_STATUS_MAESTRIA_DESCONHECIDO;
+import static br.com.chess.UtilConstantes.TIPO_STATUS_PLATAFORMA_DESCONHECIDO;
 
 public class UtilMetodo {
 
@@ -31,7 +32,8 @@ public class UtilMetodo {
             logger.error(String.format("Não foi possível apagar o arquivo %s", path));
         }
     }
-    public static Random rand(){
+
+    public static Random rand() {
         try {
             return SecureRandom.getInstanceStrong();
         } catch (NoSuchAlgorithmException e) {
@@ -43,7 +45,7 @@ public class UtilMetodo {
     public static StatusContaPlataforma retornarStatusContaPlataforma(String status) {
         try {
             return StatusContaPlataforma.findByCodigo(status);
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new ServiceError(TIPO_STATUS_PLATAFORMA_DESCONHECIDO);
         }
     }
@@ -51,15 +53,15 @@ public class UtilMetodo {
     public static TipoMaestria retornarTipoMaestria(String tipo) {
         try {
             return TipoMaestria.valueOf(tipo);
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new ServiceError(TIPO_STATUS_MAESTRIA_DESCONHECIDO);
         }
     }
 
     public static TipoPlataforma confirmarTipoPlataforma(String type) {
-        try{
+        try {
             return TipoPlataforma.valueOf(type);
-        }catch (Exception e) {
+        } catch (Exception e) {
             throw new ServiceError(UtilConstantes.TIPO_PLATAFORMA_DESCONHECIDO);
         }
     }

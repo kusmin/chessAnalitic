@@ -1,6 +1,6 @@
 package br.com.chess.dto;
 
-public class BuscaJogadorDto extends BuscaDto{
+public class BuscaJogadorDto extends BuscaDto {
 
     private String title;
 

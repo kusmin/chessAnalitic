@@ -12,10 +12,12 @@ public class ModalidadeDto {
     private TorneioDto tournament;
 
     public ModalidadeDto() {
-        // Construtor padrao
+        // Construtor padrão
     }
 
     public ModalidadeDto(Modalidade modalidade) {
+
+        System.out.println(modalidade);
         this.last = new EstatisticaGameDto(modalidade.getUltimaPartida());
         this.best = new EstatisticaGameDto(modalidade.getMelhorPartida());
         this.recorde = new RecordeModalidadeDto(modalidade);
@@ -51,5 +53,15 @@ public class ModalidadeDto {
 
     public void setRecorde(RecordeModalidadeDto recorde) {
         this.recorde = recorde;
+    }
+
+    @Override
+    public String toString() {
+        return "ModalidadeDto{" +
+                "last=" + last +
+                ", best=" + best +
+                ", recorde=" + recorde +
+                ", tournament=" + tournament +
+                '}';
     }
 }

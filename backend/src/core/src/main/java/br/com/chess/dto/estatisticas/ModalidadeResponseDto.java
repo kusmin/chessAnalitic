@@ -6,7 +6,7 @@ import br.com.chess.domain.estaticas.Modalidade;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
-public class ModalidadeResponseDto extends ModalidadeDto{
+public class ModalidadeResponseDto extends ModalidadeDto {
     private long totalGames;
     private BigDecimal percentageWins;
     private BigDecimal percentageLoss;

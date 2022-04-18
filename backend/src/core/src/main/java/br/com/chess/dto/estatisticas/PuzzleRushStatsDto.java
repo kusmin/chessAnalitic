@@ -17,6 +17,10 @@ public class PuzzleRushStatsDto {
         this.score = quebraCabecas.getScore();
     }
 
+    public PuzzleRushStatsDto(long totalAttempts) {
+        this.totalAttempts = totalAttempts;
+    }
+
     public long getTotalAttempts() {
         return totalAttempts;
     }
@@ -31,9 +35,5 @@ public class PuzzleRushStatsDto {
 
     public void setScore(long score) {
         this.score = score;
-    }
-
-    public PuzzleRushStatsDto(long totalAttempts) {
-        this.totalAttempts = totalAttempts;
     }
 }

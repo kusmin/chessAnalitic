@@ -23,11 +23,11 @@ public class BuscarPuzzleRoute extends RouteBuilder {
     public void configure() throws Exception {
         from("direct://puzzles-diarios").id("puzzlesDiarios")
                 .choice()
-                .when(header("plataforma").isEqualTo(TipoPlataforma.CHESS_COM)).to("direct:puzzlesDiarios-chesscom")
+                .when(header("plataforma").isEqualTo(TipoPlataforma.CHESS_COM)).to("direct://puzzlesDiarios-chesscom")
                 .otherwise()
                 .to("direct:erro");
 
-        from("direct:puzzlesDiarios-chesscom").id("puzzlesDiariosChessCom").process(puzzleDiarioChessComProcessor);
+        from("direct://puzzlesDiarios-chesscom").id("puzzlesDiariosChessCom").process(puzzleDiarioChessComProcessor);
         from("direct:erro").id("erro").process(erroProcessor);
     }
 }

@@ -1,13 +1,12 @@
 package br.com.chess.repositories;
 
+import br.com.chess.domain.Perfil;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import br.com.chess.domain.Perfil;
-
 public interface PerfilRepository extends JpaRepository<Perfil, Long> {
-	
-	Perfil findByNome(String nome);
-	
-	Perfil findByUuid(String uuid);
+
+    Perfil findByNome(String nome);
+
+    Perfil findByUuid(String uuid);
 
 }

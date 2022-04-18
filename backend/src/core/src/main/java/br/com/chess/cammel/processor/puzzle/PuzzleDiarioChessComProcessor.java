@@ -15,26 +15,25 @@ import org.springframework.web.client.RestOperations;
 @Component
 public class PuzzleDiarioChessComProcessor implements Processor {
 
-    private final RestOperations restTemplate;
-
     private static final Logger logger = LoggerFactory.getLogger("PuzzleDiarioChessComProcessor");
+    private final RestOperations restTemplate;
 
 
     @Autowired
-    public PuzzleDiarioChessComProcessor(@Qualifier("CHESSCOM")RestOperations restTemplate) {
+    public PuzzleDiarioChessComProcessor(@Qualifier("CHESSCOM") RestOperations restTemplate) {
         this.restTemplate = restTemplate;
     }
 
     @Override
     public void process(Exchange exchange) throws Exception {
-        try{
+        try {
             logger.info("Vai ser buscado puzzle diario");
-            ResponseEntity<PuzzleDiarioDto> response = restTemplate.getForEntity(String.format("/puzzle"),
+            ResponseEntity<PuzzleDiarioDto> response = restTemplate.getForEntity("/puzzle",
                     PuzzleDiarioDto.class);
 
 
             exchange.getMessage().setBody(response.getBody());
-        }catch(Exception e){
+        } catch (Exception e) {
             throw new IntegrationError("Integration", String.format("Erro ao buscar jogador %s", e));
         }
 

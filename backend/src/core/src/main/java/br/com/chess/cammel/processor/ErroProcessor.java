@@ -6,11 +6,11 @@ import org.apache.camel.Processor;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ErroProcessor implements Processor{
+public class ErroProcessor implements Processor {
 
-	@Override
-	public void process(Exchange exchange) throws Exception {
-		throw new ServiceError("Parametro não identificado!");
-	}
+    @Override
+    public void process(Exchange exchange) throws Exception {
+        throw new ServiceError("Parametro não identificado!");
+    }
 
 }

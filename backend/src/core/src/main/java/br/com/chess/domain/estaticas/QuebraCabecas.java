@@ -9,14 +9,14 @@ import java.util.Objects;
 
 @Entity
 @Audited
-@Table(name="quebra_cabecas")
+@Table(name = "quebra_cabecas")
 public class QuebraCabecas extends BaseDomain {
 
 
     private static final long serialVersionUID = 7870666971131492935L;
-    @Column(name ="totalAtentivas", nullable = true)
+    @Column(name = "totalAtentivas", nullable = true)
     private long totalTentativas;
-    
+
     @Column(name = "score", nullable = true)
     private long score;
 
@@ -26,14 +26,6 @@ public class QuebraCabecas extends BaseDomain {
             inverseJoinColumns = @JoinColumn(name = "estatistica_jogador_id"))
     private EstatisticaJogador estatisticaJogador;
 
-    public EstatisticaJogador getEstatisticaJogador() {
-        return estatisticaJogador;
-    }
-
-    public void setEstatisticaJogador(EstatisticaJogador estatisticaJogador) {
-        this.estatisticaJogador = estatisticaJogador;
-    }
-
     public QuebraCabecas() {
         // Construtor padrao
     }
@@ -41,10 +33,18 @@ public class QuebraCabecas extends BaseDomain {
     public QuebraCabecas(EstatisticaJogador estatisticaJogador, PuzzleRushDto puzzle) {
         super();
         this.estatisticaJogador = estatisticaJogador;
-        if (puzzle != null && puzzle.getBest() != null){
+        if (puzzle != null && puzzle.getBest() != null) {
             this.totalTentativas = puzzle.getBest().getTotalAttempts();
             this.score = puzzle.getBest().getScore();
         }
+    }
+
+    public EstatisticaJogador getEstatisticaJogador() {
+        return estatisticaJogador;
+    }
+
+    public void setEstatisticaJogador(EstatisticaJogador estatisticaJogador) {
+        this.estatisticaJogador = estatisticaJogador;
     }
 
     public long getTotalTentativas() {
@@ -62,7 +62,6 @@ public class QuebraCabecas extends BaseDomain {
     public void setScore(long score) {
         this.score = score;
     }
-
 
 
     @Override

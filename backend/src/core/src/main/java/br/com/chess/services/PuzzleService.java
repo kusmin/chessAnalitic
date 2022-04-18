@@ -18,8 +18,8 @@ import static br.com.chess.UtilConstantes.TIME_ZONE;
 @Component
 public class PuzzleService {
 
-    private final ProducerTemplate producerTemplate;
     private static final Logger logger = LoggerFactory.getLogger("PuzzleService");
+    private final ProducerTemplate producerTemplate;
     private final PuzzleDiarioRepository puzzleDiarioRepository;
 
     @Autowired
@@ -29,10 +29,10 @@ public class PuzzleService {
     }
 
     private PuzzleDiarioDto buscarPuzzleDiario(TipoPlataforma type) throws IntegrationError {
-        PuzzleDiarioDto puzzleDiarioDto = null;
-        try{
-            puzzleDiarioDto = (PuzzleDiarioDto)producerTemplate.requestBodyAndHeader("direct://puzzles-diarios","plataforma", type );
-        }catch(Exception e){
+        PuzzleDiarioDto puzzleDiarioDto;
+        try {
+            puzzleDiarioDto = (PuzzleDiarioDto) producerTemplate.requestBodyAndHeader("direct://puzzles-diarios",null, "plataforma", type);
+        } catch (Exception e) {
             throw new IntegrationError(UtilConstantes.CHESS_COM, e.getMessage());
         }
         return puzzleDiarioDto;
@@ -41,7 +41,7 @@ public class PuzzleService {
     @Scheduled(cron = "0 0 3 * * ?", zone = TIME_ZONE)
     public void atualizarPuzzles() throws IntegrationError {
         logger.info("Atualizando puzzles da plataforma");
-        for(TipoPlataforma plataforma:TipoPlataforma.values()){
+        for (TipoPlataforma plataforma : TipoPlataforma.values()) {
             this.puzzleDiarioRepository.save(new PuzzleDiario(this.buscarPuzzleDiario(plataforma), plataforma));
         }
     }

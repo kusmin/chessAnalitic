@@ -7,14 +7,16 @@ import br.com.chess.dto.estatisticas.EstatisticaGameDto;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.io.Serial;
 import java.util.Date;
 import java.util.Objects;
 
 @Entity
 @Audited
-@Table(name="estatistica_modalidade")
+@Table(name = "estatistica_modalidade")
 public class EstatisticaModalidade extends BaseDomain {
 
+    @Serial
     private static final long serialVersionUID = 8291965229903074856L;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -24,10 +26,10 @@ public class EstatisticaModalidade extends BaseDomain {
     @Column(name = "rating", nullable = false)
     private long rating;
 
-    @Column(name ="rd", nullable = true)
+    @Column(name = "rd", nullable = true)
     private long rd;
 
-    @Column(name ="game")
+    @Column(name = "game")
     private String game;
 
 
@@ -35,7 +37,7 @@ public class EstatisticaModalidade extends BaseDomain {
         // Construtor padrão
     }
 
-    public EstatisticaModalidade( EstatisticaGameDto estatisticaGameDto) {
+    public EstatisticaModalidade(EstatisticaGameDto estatisticaGameDto) {
         super();
         this.data = UtilData.getDateFromTimestamp(estatisticaGameDto.getDate());
         this.rating = estatisticaGameDto.getRating();
@@ -52,12 +54,10 @@ public class EstatisticaModalidade extends BaseDomain {
 
     /**
      * get field @Temporal(TemporalType.TIMESTAMP)
-     @Column(name = "data", nullable = false)
-
-      *
-      * @return data @Temporal(TemporalType.TIMESTAMP)
-     @Column(name = "data", nullable = false)
-
+     *
+     * @return data @Temporal(TemporalType.TIMESTAMP)
+     * @Column(name = "data", nullable = false)
+     * @Column(name = "data", nullable = false)
      */
     public Date getData() {
         return this.data;
@@ -65,12 +65,10 @@ public class EstatisticaModalidade extends BaseDomain {
 
     /**
      * set field @Temporal(TemporalType.TIMESTAMP)
-     @Column(name = "data", nullable = false)
-
-      *
-      * @param data @Temporal(TemporalType.TIMESTAMP)
-     @Column(name = "data", nullable = false)
-
+     *
+     * @param data @Temporal(TemporalType.TIMESTAMP)
+     * @Column(name = "data", nullable = false)
+     * @Column(name = "data", nullable = false)
      */
     public void setData(Date data) {
         this.data = data;
@@ -80,7 +78,6 @@ public class EstatisticaModalidade extends BaseDomain {
      * get field @Column(name = "rating", nullable = false)
      *
      * @return rating @Column(name = "rating", nullable = false)
-
      */
     public long getRating() {
         return this.rating;
@@ -90,7 +87,6 @@ public class EstatisticaModalidade extends BaseDomain {
      * set field @Column(name = "rating", nullable = false)
      *
      * @param rating @Column(name = "rating", nullable = false)
-
      */
     public void setRating(long rating) {
         this.rating = rating;
@@ -100,7 +96,6 @@ public class EstatisticaModalidade extends BaseDomain {
      * get field @Column(name ="rd", nullable = true)
      *
      * @return rd @Column(name ="rd", nullable = true)
-
      */
     public long getRd() {
         return this.rd;
@@ -110,7 +105,6 @@ public class EstatisticaModalidade extends BaseDomain {
      * set field @Column(name ="rd", nullable = true)
      *
      * @param rd @Column(name ="rd", nullable = true)
-
      */
     public void setRd(long rd) {
         this.rd = rd;
@@ -120,7 +114,6 @@ public class EstatisticaModalidade extends BaseDomain {
      * get field @Column(name ="game")
      *
      * @return game @Column(name ="game")
-
      */
     public String getGame() {
         return this.game;
@@ -130,7 +123,6 @@ public class EstatisticaModalidade extends BaseDomain {
      * set field @Column(name ="game")
      *
      * @param game @Column(name ="game")
-
      */
     public void setGame(String game) {
         this.game = game;
@@ -148,5 +140,15 @@ public class EstatisticaModalidade extends BaseDomain {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), getData(), getRating(), getRd(), getGame());
+    }
+
+    @Override
+    public String toString() {
+        return "EstatisticaModalidade{" +
+                "data=" + data +
+                ", rating=" + rating +
+                ", rd=" + rd +
+                ", game='" + game + '\'' +
+                '}';
     }
 }

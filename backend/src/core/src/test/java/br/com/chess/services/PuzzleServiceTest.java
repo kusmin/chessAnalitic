@@ -10,10 +10,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class PuzzleServiceTest extends BaseTest {
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+class PuzzleServiceTest extends BaseTest {
 
     @Autowired
     private PuzzleService puzzleService;
@@ -25,7 +26,7 @@ public class PuzzleServiceTest extends BaseTest {
      * Testando o job de atualização de puzzles
      **/
     @Test
-    public void testandoJobPuzzles() throws IntegrationError {
+    void testandoJobPuzzles() throws IntegrationError {
         this.puzzleService.atualizarPuzzles();
         List<PuzzleDiario> puzzleDiario = this.puzzleDiarioRepository.findAll();
         assertNotNull(puzzleDiario);

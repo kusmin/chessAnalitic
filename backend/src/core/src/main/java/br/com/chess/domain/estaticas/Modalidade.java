@@ -6,45 +6,48 @@ import br.com.chess.dto.estatisticas.ModalidadeDto;
 import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
+import java.io.Serial;
 import java.util.Objects;
 
 @Entity
 @Audited
-@Table(name="modalidade")
+@Table(name = "modalidade")
 public class Modalidade extends BaseDomain {
+
+    @Serial
     private static final long serialVersionUID = -3646380255194961867L;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo", nullable = false)
     private TipoModalidade tipo;
 
-    @Column(name ="vitorias", nullable = true)
+    @Column(name = "vitorias", nullable = true)
     private long vitorias;
 
-    @Column(name ="derrotas", nullable = true)
+    @Column(name = "derrotas", nullable = true)
     private long derrotas;
 
-    @Column(name ="empates", nullable = true)
+    @Column(name = "empates", nullable = true)
     private long empates;
 
-    @Column(name ="total_partidas", nullable = true)
+    @Column(name = "total_partidas", nullable = true)
     private long totalPartidas;
 
-    @Column(name ="tempo_movimento", nullable = true)
+    @Column(name = "tempo_movimento", nullable = true)
     private long tempoPorMovimento;
 
-    @Column(name ="derrotas_tempo", nullable = true)
+    @Column(name = "derrotas_tempo", nullable = true)
     private long derrotasTempo;
 
     @ManyToOne
     @JoinColumn(name = "estatisticaJogador_id")
     private EstatisticaJogador estatisticaJogador;
 
-    @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL, fetch= FetchType.EAGER)
+    @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "melhor_partida_id")
     private EstatisticaModalidade melhorPartida;
 
-    @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL, fetch= FetchType.EAGER)
+    @OneToOne(orphanRemoval = true, cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "ultima_partida_id")
     private EstatisticaModalidade ultimaPartida;
 
@@ -56,17 +59,17 @@ public class Modalidade extends BaseDomain {
         super();
         this.estatisticaJogador = estatisticaJogador;
         this.tipo = tipoModalidade;
-        if(modalidadeDto.getRecorde() != null){
+        if (modalidadeDto.getRecorde() != null) {
             this.vitorias = modalidadeDto.getRecorde().getWin();
             this.derrotas = modalidadeDto.getRecorde().getLoss();
             this.empates = modalidadeDto.getRecorde().getDraw();
             this.tempoPorMovimento = modalidadeDto.getRecorde().getTimePerMove();
             this.derrotasTempo = modalidadeDto.getRecorde().getTimeoutPercent();
         }
-        if(modalidadeDto.getBest() != null){
+        if (modalidadeDto.getBest() != null) {
             this.melhorPartida = new EstatisticaModalidade(modalidadeDto.getBest());
         }
-        if(modalidadeDto.getLast() != null){
+        if (modalidadeDto.getLast() != null) {
             this.ultimaPartida = new EstatisticaModalidade(modalidadeDto.getLast());
         }
 
@@ -76,8 +79,16 @@ public class Modalidade extends BaseDomain {
         return ultimaPartida;
     }
 
+    public void setUltimaPartida(EstatisticaModalidade ultimaPartida) {
+        this.ultimaPartida = ultimaPartida;
+    }
+
     public EstatisticaModalidade getMelhorPartida() {
         return melhorPartida;
+    }
+
+    public void setMelhorPartida(EstatisticaModalidade melhorPartida) {
+        this.melhorPartida = melhorPartida;
     }
 
     public TipoModalidade getTipo() {
@@ -128,14 +139,6 @@ public class Modalidade extends BaseDomain {
         this.derrotasTempo = derrotasTempo;
     }
 
-    public void setMelhorPartida(EstatisticaModalidade melhorPartida) {
-        this.melhorPartida = melhorPartida;
-    }
-
-    public void setUltimaPartida(EstatisticaModalidade ultimaPartida) {
-        this.ultimaPartida = ultimaPartida;
-    }
-
     public EstatisticaJogador getEstatisticaJogador() {
         return estatisticaJogador;
     }
@@ -156,5 +159,21 @@ public class Modalidade extends BaseDomain {
     @Override
     public int hashCode() {
         return Objects.hash(super.hashCode(), getTipo());
+    }
+
+    @Override
+    public String toString() {
+        return "Modalidade{" +
+                "tipo=" + tipo +
+                ", vitorias=" + vitorias +
+                ", derrotas=" + derrotas +
+                ", empates=" + empates +
+                ", totalPartidas=" + totalPartidas +
+                ", tempoPorMovimento=" + tempoPorMovimento +
+                ", derrotasTempo=" + derrotasTempo +
+                ", estatisticaJogador=" + estatisticaJogador +
+                ", melhorPartida=" + melhorPartida +
+                ", ultimaPartida=" + ultimaPartida +
+                '}';
     }
 }
